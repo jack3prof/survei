@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Survei Kebutuhan Walas</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #1e293b;
+      --border: #e2e8f0;
+      --danger: #ef4444;
+      --success: #22c55e;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
+      border: 1px solid var(--border);
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      color: #0f172a;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #64748b;
+      margin-bottom: 24px;
+      font-size: 0.95rem;
+    }
+
+    h2 {
+      font-size: 1.3rem;
+      margin-bottom: 16px;
+      color: #1e293b;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 8px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+    }
+
+    .hint {
+      font-size: 0.8rem;
+      color: #64748b;
+      margin-top: 4px;
+    }
+
+    input[type="text"], textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color 0.2s;
+    }
+
+    input[type="text"]:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+
+    .kode-input {
+      letter-spacing: 1px;
+      font-weight: bold;
+    }
+
+    /* Likert 5-level component */
+    .likert-group {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+      background: #f1f5f9;
+      padding: 12px;
+      border-radius: 8px;
+    }
+
+    .likert-option {
+      flex: 1;
+      text-align: center;
+    }
+
+    .likert-option input[type="radio"] {
+      display: none;
+    }
+
+    .likert-option label {
+      display: block;
+      padding: 8px 4px;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+      margin-bottom: 0;
+    }
+
+    .likert-option input[type="radio"]:checked + label {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .likert-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: #64748b;
+      margin-top: 4px;
+      padding: 0 4px;
+    }
+
+    button.btn-submit {
+      width: 100%;
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    button.btn-submit:hover {
+      background: var(--primary-hover);
+    }
+
+    button:disabled {
+      background: #94a3b8;
+      cursor: not-allowed;
+    }
+
+    /* Prefix grid display */
+    .prefix-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .prefix-chip {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #1e40af;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    /* Table Scrollable styling (4 rows max height) */
+    .table-container {
+      max-height: 220px; /* sekitar 4 baris */
+      overflow-y: auto;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-top: 12px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    th, td {
+      padding: 10px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      background: #f1f5f9;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      font-weight: 600;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* Average scores list */
+    .avg-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .avg-card {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .avg-val {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: var(--primary);
+      background: #dbeafe;
+      padding: 4px 10px;
+      border-radius: 6px;
+    }
+
+    .alert {
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      font-size: 0.9rem;
+      display: none;
+    }
+
+    .alert-danger { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+    .alert-success { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
+
+    .config-box {
+      background: #fffbeb;
+      border: 1px solid #fef3c7;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-size: 0.85rem;
+    }
+
+    @media (max-width: 600px) {
+      body { padding: 10px; }
+      .card { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  
+  <!-- Form Survei -->
+  <div class="card">
+    <h1>Survei Kebutuhan Walas</h1>
+<!--     <p class="subtitle">Evaluasi dan pemetaan kebutuhan pendampingan kelompok usrah</p>
+
+     Konfigurasi API SheetDB -->
+<!--     <div class="config-box">
+      <label for="apiUrl"><strong>URL API SheetDB.io:</strong></label>
+      <input type="text" id="apiUrl" placeholder="https://sheetdb.io/api/v1/YOUR_API_ID" style="margin-top:4px;">
+      <div class="hint">Pastikan URL API terhubung dengan Google Sheet yang memiliki header sesuai petunjuk.</div>
+    </div>
+
+    <div id="alertBox" class="alert"></div>
+-->
+    <form id="surveyForm">
+      <!-- Identitas Pengisi -->
+      <div class="form-group">
+        <label for="kodePengisi">Kode Pengisi *</label>
+        <input type="text" id="kodePengisi" class="kode-input" oninput="this.value = this.value.toUpperCase()" placeholder="AB CD123 EFG45" required>
+        
+        <div class="hint">Format wajib: 2 huruf + spasi + 2 huruf 3 angka + spasi + 3 huruf 2 angka (Contoh: AB CD123 EFG45)</div>
+      </div>
+
+      <h2 style="margin-top: 30px;">A. Evaluasi & Sikap (Skala 1 - 5)</h2>
+
+      <!-- Q1 -->
+      <div class="form-group">
+        <label>1. Bagaimana keaktifan rutin anggota dalam kelompok usrah Anda?</label>
+        <div class="likert-group">
+          <div class="likert-option"><input type="radio" name="q1" id="q1_1" value="1" required><label for="q1_1">1</label></div>
+          <div class="likert-option"><input type="radio" name="q1" id="q1_2" value="2"><label for="q1_2">2</label></div>
+          <div class="likert-option"><input type="radio" name="q1" id="q1_3" value="3"><label for="q1_3">3</label></div>
+          <div class="likert-option"><input type="radio" name="q1" id="q1_4" value="4"><label for="q1_4">4</label></div>
+          <div class="likert-option"><input type="radio" name="q1" id="q1_5" value="5"><label for="q1_5">5</label></div>
+        </div>
+        <div class="likert-labels"><span>1 = Tidak Aktif</span><span>5 = Sangat Aktif</span></div>
+      </div>
+
+      <!-- Q2 -->
+      <div class="form-group">
+        <label>2. Seberapa kuat ikatan ukhuwah di antara anggota usrah saat ini?</label>
+        <div class="likert-group">
+          <div class="likert-option"><input type="radio" name="q2" id="q2_1" value="1" required><label for="q2_1">1</label></div>
+          <div class="likert-option"><input type="radio" name="q2" id="q2_2" value="2"><label for="q2_2">2</label></div>
+          <div class="likert-option"><input type="radio" name="q2" id="q2_3" value="3"><label for="q2_3">3</label></div>
+          <div class="likert-option"><input type="radio" name="q2" id="q2_4" value="4"><label for="q2_4">4</label></div>
+          <div class="likert-option"><input type="radio" name="q2" id="q2_5" value="5"><label for="q2_5">5</label></div>
+        </div>
+        <div class="likert-labels"><span>1 = Tidak Kuat</span><span>5 = Sangat Kuat</span></div>
+      </div>
+
+      <!-- Q3 -->
+      <div class="form-group">
+        <label>3. Apakah materi halaqah yang diberikan sudah sesuai dengan kebutuhan mereka?</label>
+        <div class="likert-group">
+          <div class="likert-option"><input type="radio" name="q3" id="q3_1" value="1" required><label for="q3_1">1</label></div>
+          <div class="likert-option"><input type="radio" name="q3" id="q3_2" value="2"><label for="q3_2">2</label></div>
+          <div class="likert-option"><input type="radio" name="q3" id="q3_3" value="3"><label for="q3_3">3</label></div>
+          <div class="likert-option"><input type="radio" name="q3" id="q3_4" value="4"><label for="q3_4">4</label></div>
+          <div class="likert-option"><input type="radio" name="q3" id="q3_5" value="5"><label for="q3_5">5</label></div>
+        </div>
+        <div class="likert-labels"><span>1 = Tidak Sesuai</span><span>5 = Sangat Sesuai</span></div>
+      </div>
+
+      <!-- Q4 -->
+      <div class="form-group">
+        <label>4. Apakah Anda merasa cukup siap dengan panduan materi yang ada?</label>
+        <div class="likert-group">
+          <div class="likert-option"><input type="radio" name="q4" id="q4_1" value="1" required><label for="q4_1">1</label></div>
+          <div class="likert-option"><input type="radio" name="q4" id="q4_2" value="2"><label for="q4_2">2</label></div>
+          <div class="likert-option"><input type="radio" name="q4" id="q4_3" value="3"><label for="q4_3">3</label></div>
+          <div class="likert-option"><input type="radio" name="q4" id="q4_4" value="4"><label for="q4_4">4</label></div>
+          <div class="likert-option"><input type="radio" name="q4" id="q4_5" value="5"><label for="q4_5">5</label></div>
+        </div>
+        <div class="likert-labels"><span>1 = Tidak Siap</span><span>5 = Sangat Siap</span></div>
+      </div>
+
+      <!-- Q5 -->
+      <div class="form-group">
+        <label>5. Apakah metode evaluasi saat ini efektif mengukur perkembangan tarbiyah anggota anda?</label>
+        <div class="likert-group">
+          <div class="likert-option"><input type="radio" name="q5" id="q5_1" value="1" required><label for="q5_1">1</label></div>
+          <div class="likert-option"><input type="radio" name="q5" id="q5_2" value="2"><label for="q5_2">2</label></div>
+          <div class="likert-option"><input type="radio" name="q5" id="q5_3" value="3"><label for="q5_3">3</label></div>
+          <div class="likert-option"><input type="radio" name="q5" id="q5_4" value="4"><label for="q5_4">4</label></div>
+          <div class="likert-option"><input type="radio" name="q5" id="q5_5" value="5"><label for="q5_5">5</label></div>
+        </div>
+        <div class="likert-labels"><span>1 = Tidak Efektif</span><span>5 = Sangat Efektif</span></div>
+      </div>
+
+      <!-- Q6 -->
+      <div class="form-group">
+        <label>6. Seberapa sering Anda melakukan pendekatan personal (liqa' tanzili/tafardi) di luar jadwal rutin?</label>
+        <div class="likert-group">
+          <div class="likert-option"><input type="radio" name="q6" id="q6_1" value="1" required><label for="q6_1">1</label></div>
+          <div class="likert-option"><input type="radio" name="q6" id="q6_2" value="2"><label for="q6_2">2</label></div>
+          <div class="likert-option"><input type="radio" name="q6" id="q6_3" value="3"><label for="q6_3">3</label></div>
+          <div class="likert-option"><input type="radio" name="q6" id="q6_4" value="4"><label for="q6_4">4</label></div>
+          <div class="likert-option"><input type="radio" name="q6" id="q6_5" value="5"><label for="q6_5">5</label></div>
+        </div>
+        <div class="likert-labels"><span>1 = Tidak Sering</span><span>5 = Sangat Sering</span></div>
+      </div>
+
+      <!-- Q7 -->
+      <div class="form-group">
+        <label>7. Apakah anggota anda masih ada yg belum membina?</label>
+        <div class="likert-group">
+          <div class="likert-option"><input type="radio" name="q7" id="q7_1" value="1" required><label for="q7_1">1</label></div>
+          <div class="likert-option"><input type="radio" name="q7" id="q7_2" value="2"><label for="q7_2">2</label></div>
+          <div class="likert-option"><input type="radio" name="q7" id="q7_3" value="3"><label for="q7_3">3</label></div>
+          <div class="likert-option"><input type="radio" name="q7" id="q7_4" value="4"><label for="q7_4">4</label></div>
+          <div class="likert-option"><input type="radio" name="q7" id="q7_5" value="5"><label for="q7_5">5</label></div>
+        </div>
+        <div class="likert-labels"><span>1 = Tidak Ada</span><span>5 = Banyak / Ya</span></div>
+      </div>
+
+      <!-- Q8 -->
+      <div class="form-group">
+        <label>8. Apakah anda memerlukan penguatan untuk memotivasi anggota tsb?</label>
+        <div class="likert-group">
+          <div class="likert-option"><input type="radio" name="q8" id="q8_1" value="1" required><label for="q8_1">1</label></div>
+          <div class="likert-option"><input type="radio" name="q8" id="q8_2" value="2"><label for="q8_2">2</label></div>
+          <div class="likert-option"><input type="radio" name="q8" id="q8_3" value="3"><label for="q8_3">3</label></div>
+          <div class="likert-option"><input type="radio" name="q8" id="q8_4" value="4"><label for="q8_4">4</label></div>
+          <div class="likert-option"><input type="radio" name="q8" id="q8_5" value="5"><label for="q8_5">5</label></div>
+        </div>
+        <div class="likert-labels"><span>1 = Tidak Butuh</span><span>5 = Sangat Butuh</span></div>
+      </div>
+
+      <!-- Q9 -->
+      <div class="form-group">
+        <label>9. Apakah Anda butuh pelatihan khusus untuk teknik komunikasi rekrutmen?</label>
+        <div class="likert-group">
+          <div class="likert-option"><input type="radio" name="q9" id="q9_1" value="1" required><label for="q9_1">1</label></div>
+          <div class="likert-option"><input type="radio" name="q9" id="q9_2" value="2"><label for="q9_2">2</label></div>
+          <div class="likert-option"><input type="radio" name="q9" id="q9_3" value="3"><label for="q9_3">3</label></div>
+          <div class="likert-option"><input type="radio" name="q9" id="q9_4" value="4"><label for="q9_4">4</label></div>
+          <div class="likert-option"><input type="radio" name="q9" id="q9_5" value="5"><label for="q9_5">5</label></div>
+        </div>
+        <div class="likert-labels"><span>1 = Tidak Butuh</span><span>5 = Sangat Butuh</span></div>
+      </div>
+
+      <h2 style="margin-top: 30px;">B. Pertanyaan Terbuka</h2>
+
+      <div class="form-group">
+        <label for="ft1">1. Tentang materi, pembahasan apa yg anda butuhkan?</label>
+        <textarea id="ft1" rows="3" placeholder="Tuliskan jawaban Anda..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="ft2">2. Apa kendala terbesar yang sering membuat anggota absen?</label>
+        <textarea id="ft2" rows="3" placeholder="Tuliskan jawaban Anda..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="ft3">3. Apa yg anda butuhkan untuk penguatan pengelolaan usrah?</label>
+        <textarea id="ft3" rows="3" placeholder="Tuliskan jawaban Anda..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="ft4">4. Apa bentuk dukungan yang paling Anda butuhkan dari lembaga atau pengurus?</label>
+        <textarea id="ft4" rows="3" placeholder="Tuliskan jawaban Anda..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="ft5">5. Apa alasan utama yang sering membuat orang ragu atau menolak ikut pembinaan?</label>
+        <textarea id="ft5" rows="3" placeholder="Tuliskan jawaban Anda..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="ft6">6. Apa alasan anggota yang belum membina?</label>
+        <textarea id="ft6" rows="3" placeholder="Tuliskan jawaban Anda..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="ft7">7. Bagaimana anda menghadapi anggota yang belum membina?</label>
+        <textarea id="ft7" rows="3" placeholder="Tuliskan jawaban Anda..."></textarea>
+      </div>
+
+      <button type="submit" id="btnSubmit" class="btn-submit">Kirim Survei</button>
+    </form>
+  </div>
+
+  <!-- Dashboard Hasil & Data -->
+  <div class="card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+      <h2>Dashboard & Data Pengisian</h2>
+      <button id="btnRefresh" style="padding: 6px 12px; background: #e2e8f0; border: none; border-radius: 6px; cursor: pointer;">Refresh Data</button>
+    </div>
+
+    <!-- Rincian Jumlah Pengisi per Prefix 2 Huruf Pertama -->
+    <div class="form-group">
+      <label>Rincian Jumlah Pengisi (Berdasarkan 2 Huruf Pertama Kode):</label>
+      <div id="prefixContainer" class="prefix-grid">
+        <div style="color: #94a3b8; font-size: 0.9rem;">Belum ada data...</div>
+      </div>
+    </div>
+
+    <!-- Tabel 4 Pengisi Terbaru -->
+    <div class="form-group" style="margin-top: 24px;">
+      <label>Daftar Pengisi Terbaru (Maks. 4 Baris Terlihat):</label>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 70px;">No</th>
+              <th>Waktu Pengisian</th>
+              <th>Kode Pengisi</th>
+            </tr>
+          </thead>
+          <tbody id="pengisiTableBody">
+            <tr><td colspan="3" style="text-align:center; color:#94a3b8;">Memuat data...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Hasil Isian Tertutup (Rata-rata) -->
+    <div class="form-group" style="margin-top: 24px;">
+      <label>Hasil Rata-Rata Jawaban Tertutup (Skala 1 - 5):</label>
+      <div id="avgGrid" class="avg-grid">
+        <!-- Will be filled dynamically -->
+      </div>
+    </div>
+
+    <!-- Hasil Free Text (> 15 karakter) -->
+    <div class="form-group" style="margin-top: 24px;">
+      <label>Hasil Jawaban Terbuka (Karakter > 15, Maks. 4 Baris Terlihat):</label>
+      <div class="table-container" style="max-height: 280px;">
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 50px;">No</th>
+              <th style="width: 140px;">Waktu</th>
+              <th style="width: 140px;">Kode Pengisi</th>
+              <th>Tanggapan Terbuka</th>
+            </tr>
+          </thead>
+          <tbody id="freeTextTableBody">
+            <tr><td colspan="4" style="text-align:center; color:#94a3b8;">Memuat data...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+  // Dynamic Regex Pattern per request: /^\s*[A-Z]{2}\s+[A-Z]{2}[0-9]{3}\s+[A-Z]{3}[0-9]{2}\s*$/
+  const KODE_REGEX = /^\s*[A-Z]{2}\s+[A-Z]{2}[0-9]{3}\s+[A-Z]{3}[0-9]{2}\s*$/;
+  let allData = [];
+
+  // Elements
+  const apiUrlInput = document.getElementById('apiUrl');
+  const kodeInput = document.getElementById('kodePengisi');
+  const surveyForm = document.getElementById('surveyForm');
+  const btnSubmit = document.getElementById('btnSubmit');
+  const alertBox = document.getElementById('alertBox');
+  const btnRefresh = document.getElementById('btnRefresh');
+
+  // Load saved API URL if exists
+  const savedUrl = localStorage.getItem('sheetdb_api_url') || '';
+  if (savedUrl) apiUrlInput.value = savedUrl;
+
+  apiUrlInput.addEventListener('change', () => {
+    localStorage.setItem('sheetdb_api_url', apiUrlInput.value.trim());
+    fetchData();
+  });
+
+  // Automatically upper-case Kode Pengisi as user types
+  kodeInput.addEventListener('input', (e) => {
+    e.target.value = e.target.value.toUpperCase();
+  });
+
+  function showAlert(msg, type = 'danger') {
+    alertBox.className = `alert alert-${type}`;
+    alertBox.textContent = msg;
+    alertBox.style.display = 'block';
+    alertBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  function hideAlert() {
+    alertBox.style.display = 'none';
+  }
+
+  // Get current API Endpoint
+  function getApiEndpoint() {
+    return apiUrlInput.value.trim();
+  }
+
+  // Fetch all existing data from SheetDB
+  async function fetchData() {
+    const url = getApiEndpoint();
+    if (!url) {
+      updateDashboard([]);
+      return;
+    }
+
+    try {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('Gagal mengambil data');
+      const data = await res.json();
+      allData = Array.isArray(data) ? data : [];
+      updateDashboard(allData);
+    } catch (err) {
+      console.error(err);
+      updateDashboard([]);
+    }
+  }
+
+  // Update Dashboard Displays
+  function updateDashboard(data) {
+    // Sort data newest first based on waktu_pengisian
+    const sortedData = [...data].sort((a, b) => {
+      const dateA = new Date(a.waktu_pengisian || 0);
+      const dateB = new Date(b.waktu_pengisian || 0);
+      return dateB - dateA;
+    });
+
+    // 1. Rincian pengisi berdasarkan 2 huruf pertama unik
+    const prefixCounts = {};
+    sortedData.forEach(item => {
+      if (item.kode_pengisi) {
+        const cleanKode = item.kode_pengisi.trim();
+        const prefix = cleanKode.substring(0, 2).toUpperCase();
+        if (prefix && /^[A-Z]{2}$/.test(prefix)) {
+          prefixCounts[prefix] = (prefixCounts[prefix] || 0) + 1;
+        }
+      }
+    });
+
+    const prefixContainer = document.getElementById('prefixContainer');
+    prefixContainer.innerHTML = '';
+    const prefixes = Object.keys(prefixCounts);
+    if (prefixes.length === 0) {
+      prefixContainer.innerHTML = '<div style="color: #94a3b8; font-size: 0.9rem;">Belum ada pengisi tercatat.</div>';
+    } else {
+      prefixes.forEach(pfx => {
+        const chip = document.createElement('div');
+        chip.className = 'prefix-chip';
+        chip.textContent = `${pfx} : ${prefixCounts[pfx]} pengisi`;
+        prefixContainer.appendChild(chip);
+      });
+    }
+
+    // 2. Tabel pengisi terbaru (Maks 4 baris scrollable)
+    const pengisiBody = document.getElementById('pengisiTableBody');
+    pengisiBody.innerHTML = '';
+    if (sortedData.length === 0) {
+      pengisiBody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:#94a3b8;">Belum ada data pengisi</td></tr>';
+    } else {
+      sortedData.forEach((row, idx) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${idx + 1}</td>
+          <td>${row.waktu_pengisian || '-'}</td>
+          <td><strong>${row.kode_pengisi || '-'}</strong></td>
+        `;
+        pengisiBody.appendChild(tr);
+      });
+    }
+
+    // 3. Rata-rata Pertanyaan Tertutup (q1 s/d q9)
+    const avgGrid = document.getElementById('avgGrid');
+    avgGrid.innerHTML = '';
+    const qTitles = [
+      '1. Keaktifan Usrah',
+      '2. Ikatan Ukhuwah',
+      '3. Kesesuaian Materi',
+      '4. Kesiapan Panduan',
+      '5. Efektivitas Evaluasi',
+      '6. Frekuensi Pendekatan Personal',
+      '7. Anggota Belum Membina',
+      '8. Kebutuhan Penguatan Motivasi',
+      '9. Kebutuhan Pelatihan Rekrutmen'
+    ];
+
+    for (let i = 1; i <= 9; i++) {
+      const key = `q${i}`;
+      let total = 0;
+      let count = 0;
+      sortedData.forEach(row => {
+        const val = parseFloat(row[key]);
+        if (!isNaN(val)) {
+          total += val;
+          count++;
+        }
+      });
+      const avg = count > 0 ? (total / count).toFixed(2) : '-';
+
+      const card = document.createElement('div');
+      card.className = 'avg-card';
+      card.innerHTML = `
+        <span style="font-size:0.9rem; font-weight:600;">${qTitles[i-1]}</span>
+        <span class="avg-val">${avg}</span>
+      `;
+      avgGrid.appendChild(card);
+    }
+
+    // 4. Tabel Free Text (> 15 karakter)
+    const ftBody = document.getElementById('freeTextTableBody');
+    ftBody.innerHTML = '';
+    
+    const ftQuestions = [
+      { key: 'ft1', label: 'Kebutuhan Pembahasan Materi' },
+      { key: 'ft2', label: 'Kendala Utama Absen' },
+      { key: 'ft3', label: 'Kebutuhan Pengelolaan Usrah' },
+      { key: 'ft4', label: 'Dukungan Lembaga/Pengurus' },
+      { key: 'ft5', label: 'Alasan Ragu/Menolak Pembinaan' },
+      { key: 'ft6', label: 'Alasan belum membina' },
+      { key: 'ft7', label: 'Cara Menghadapi Yg Belum Membina' }
+    ];
+
+    let ftEntries = [];
+    sortedData.forEach(row => {
+      ftQuestions.forEach(q => {
+        const textVal = (row[q.key] || '').trim();
+        if (textVal.length > 15) {
+          ftEntries.push({
+            waktu: row.waktu_pengisian || '-',
+            kode: row.kode_pengisi || '-',
+            topik: q.label,
+            teks: textVal
+          });
+        }
+      });
+    });
+
+    if (ftEntries.length === 0) {
+      ftBody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#94a3b8;">Belum ada tanggapan terbuka (> 15 karakter)</td></tr>';
+    } else {
+      ftEntries.forEach((entry, idx) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${idx + 1}</td>
+          <td style="font-size:0.85rem;">${entry.waktu}</td>
+          <td><strong>${entry.kode}</strong></td>
+          <td><strong style="color:var(--primary); font-size:0.85rem;">[${entry.topik}]</strong><br>${entry.teks}</td>
+        `;
+        ftBody.appendChild(tr);
+      });
+    }
+  }
+
+  // Submit Handler
+  surveyForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    hideAlert();
+
+    const apiUrl = getApiEndpoint();
+    if (!apiUrl) {
+      showAlert('Silakan masukkan URL API terlebih dahulu!');
+      return;
+    }
+
+    const rawKode = kodeInput.value;
+    // Standardize spacing for exact format checking
+    const formattedKode = rawKode.trim().toUpperCase();
+
+    // 1. Validasi Regex Pattern
+    if (!KODE_REGEX.test(formattedKode)) {
+      showAlert('Format Kode Pengisi tidak sesuai! Contoh format benar: AB CD123 EFG45');
+      return;
+    }
+
+    btnSubmit.disabled = true;
+    btnSubmit.textContent = 'Memeriksa & Menyimpan...';
+
+    try {
+      // 2. Cegah Pengisian Ganda (Cek via SheetDB GET)
+      const checkRes = await fetch(apiUrl);
+      if (checkRes.ok) {
+        const currentData = await checkRes.json();
+        const isDuplicate = Array.isArray(currentData) && currentData.some(row => {
+          return (row.kode_pengisi || '').trim().toUpperCase() === formattedKode;
+        });
+
+        if (isDuplicate) {
+          showAlert(`Kode Pengisi "${formattedKode}" sudah pernah mengisi survei ini!`);
+          btnSubmit.disabled = false;
+          btnSubmit.textContent = 'Kirim Survei';
+          return;
+        }
+      }
+
+      // 3. Prepare Form Data
+      const now = new Date();
+      const timestamp = now.toLocaleDateString('id-ID') + ' ' + now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+
+      const payload = {
+        waktu_pengisian: timestamp,
+        kode_pengisi: formattedKode,
+        q1: document.querySelector('input[name="q1"]:checked')?.value || '',
+        q2: document.querySelector('input[name="q2"]:checked')?.value || '',
+        q3: document.querySelector('input[name="q3"]:checked')?.value || '',
+        q4: document.querySelector('input[name="q4"]:checked')?.value || '',
+        q5: document.querySelector('input[name="q5"]:checked')?.value || '',
+        q6: document.querySelector('input[name="q6"]:checked')?.value || '',
+        q7: document.querySelector('input[name="q7"]:checked')?.value || '',
+        q8: document.querySelector('input[name="q8"]:checked')?.value || '',
+        q9: document.querySelector('input[name="q9"]:checked')?.value || '',
+        ft1: document.getElementById('ft1').value.trim(),
+        ft2: document.getElementById('ft2').value.trim(),
+        ft3: document.getElementById('ft3').value.trim(),
+        ft4: document.getElementById('ft4').value.trim(),
+        ft5: document.getElementById('ft5').value.trim(),
+        ft6: document.getElementById('ft6').value.trim(),
+        ft7: document.getElementById('ft7').value.trim()
+      };
+
+      // 4. POST to SheetDB
+      const postRes = await fetch(apiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ data: [payload] })
+      });
+
+      if (!postRes.ok) throw new Error('Gagal mengirim data.');
+
+      showAlert('Terima kasih! Survei Anda berhasil dikirim.', 'success');
+      surveyForm.reset();
+      fetchData(); // Refresh dashboard
+
+    } catch (err) {
+      console.error(err);
+      showAlert('Terjadi kesalahan saat mengirim data.');
+    } finally {
+      btnSubmit.disabled = false;
+      btnSubmit.textContent = 'Kirim Survei';
+    }
+  });
+
+  btnRefresh.addEventListener('click', fetchData);
+
+  // Initial Load
+  if (getApiEndpoint()) {
+    fetchData();
+  }
+</script>
+
+</body>
+</html>
