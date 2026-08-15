@@ -1,0 +1,1730 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Survey Kebutuhan Walas</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f4f6f8;
+    color: #1f2937;
+}
+
+.container {
+    max-width: 1000px;
+    margin: auto;
+    padding: 20px 15px 50px;
+}
+
+.header {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    color: white;
+    padding: 28px 24px;
+    border-radius: 16px;
+    margin-bottom: 20px;
+}
+
+.header h1 {
+    margin: 0 0 8px;
+    font-size: 28px;
+}
+
+.header p {
+    margin: 0;
+    opacity: .9;
+}
+
+.card {
+    background: white;
+    border-radius: 14px;
+    padding: 22px;
+    margin-bottom: 20px;
+    box-shadow: 0 3px 15px rgba(0,0,0,.06);
+}
+
+.card h2 {
+    margin-top: 0;
+    font-size: 20px;
+}
+
+.field {
+    margin-bottom: 25px;
+}
+
+label.title {
+    display: block;
+    font-weight: bold;
+    line-height: 1.5;
+    margin-bottom: 10px;
+}
+
+input[type="text"],
+textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 9px;
+    font-size: 16px;
+    font-family: inherit;
+    outline: none;
+}
+
+input[type="text"]:focus,
+textarea:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37,99,235,.1);
+}
+
+textarea {
+    resize: vertical;
+}
+
+.hint {
+    margin-top: 6px;
+    color: #64748b;
+    font-size: 13px;
+}
+
+/* PILIHAN 1-5 */
+
+.scale {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 7px;
+}
+
+.scale label {
+    border: 1px solid #dbe3ef;
+    border-radius: 9px;
+    padding: 11px 4px;
+    text-align: center;
+    cursor: pointer;
+    background: #f8fafc;
+}
+
+.scale label:hover {
+    background: #eff6ff;
+    border-color: #93c5fd;
+}
+
+.scale label:has(input:checked) {
+    background: #dbeafe;
+    border-color: #2563eb;
+}
+
+.scale input {
+    display: block;
+    margin: 0 auto 5px;
+}
+
+.number {
+    display: block;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.description {
+    display: block;
+    font-size: 11px;
+    color: #64748b;
+}
+
+/* BUTTON */
+
+button {
+    border: none;
+    border-radius: 9px;
+    padding: 13px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-primary {
+    width: 100%;
+    background: #2563eb;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #1d4ed8;
+}
+
+.btn-primary:disabled {
+    background: #94a3b8;
+    cursor: not-allowed;
+}
+
+.small-button {
+    background: #e2e8f0;
+    color: #334155;
+    padding: 8px 12px;
+    font-size: 13px;
+}
+
+/* PESAN */
+
+.message {
+    display: none;
+    padding: 13px;
+    border-radius: 9px;
+    margin-bottom: 18px;
+    line-height: 1.5;
+}
+
+.message.success {
+    display: block;
+    background: #dcfce7;
+    color: #166534;
+}
+
+.message.error {
+    display: block;
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+/* TABLE */
+
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+}
+
+th,
+td {
+    padding: 10px 8px;
+    border-bottom: 1px solid #e2e8f0;
+    vertical-align: top;
+}
+
+th {
+    background: #f1f5f9;
+    text-align: left;
+}
+
+.average {
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+    color: #2563eb;
+}
+
+.empty {
+    color: #64748b;
+    font-style: italic;
+    padding: 15px 0;
+}
+
+.loading {
+    text-align: center;
+    color: #64748b;
+    padding: 15px;
+}
+
+.section-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+/* MOBILE */
+
+@media (max-width: 600px) {
+
+    .container {
+        padding: 10px 8px 40px;
+    }
+
+    .header {
+        padding: 22px 18px;
+    }
+
+    .header h1 {
+        font-size: 23px;
+    }
+
+    .card {
+        padding: 17px;
+    }
+
+    .scale {
+        gap: 3px;
+    }
+
+    .scale label {
+        padding: 8px 2px;
+    }
+
+    .description {
+        font-size: 9px;
+    }
+
+    th,
+    td {
+        padding: 8px 5px;
+        font-size: 13px;
+    }
+}
+</style>
+</head>
+
+
+<body>
+
+<div class="container">
+
+    <!-- =================================================
+         JUDUL
+    ================================================== -->
+
+    <div class="header">
+
+        <h1>Survey Kebutuhan Walas</h1>
+
+        <p>
+            Mohon isi survey sesuai kondisi dan kebutuhan.
+        </p>
+
+    </div>
+
+
+    <!-- =================================================
+         FORM
+    ================================================== -->
+
+    <div class="card">
+
+        <div id="message" class="message"></div>
+
+
+        <!-- PENGISI -->
+
+        <div class="field">
+
+            <label
+                class="title"
+                for="pengisi"
+            >
+                Pengisi
+            </label>
+
+            <input
+                type="text"
+                id="pengisi"
+                maxlength="15"
+                autocomplete="off"
+                autocapitalize="characters"
+                spellcheck="false"
+                placeholder="AB AB123 ABC12"
+            >
+
+            <div class="hint">
+                Format wajib:
+                <b>AB AB123 ABC12</b>
+            </div>
+
+        </div>
+
+
+        <!-- PERTANYAAN 1 -->
+
+        <div class="field">
+
+            <label class="title">
+                1. Apakah ada kendala dalam pencarian materi?
+            </label>
+
+            <div class="scale">
+
+                <label>
+                    <input
+                        type="radio"
+                        name="materi"
+                        value="1"
+                    >
+                    <span class="number">1</span>
+                    <span class="description">Tidak ada</span>
+                </label>
+
+                <label>
+                    <input
+                        type="radio"
+                        name="materi"
+                        value="2"
+                    >
+                    <span class="number">2</span>
+                    <span class="description">Sedikit</span>
+                </label>
+
+                <label>
+                    <input
+                        type="radio"
+                        name="materi"
+                        value="3"
+                    >
+                    <span class="number">3</span>
+                    <span class="description">Sedang</span>
+                </label>
+
+                <label>
+                    <input
+                        type="radio"
+                        name="materi"
+                        value="4"
+                    >
+                    <span class="number">4</span>
+                    <span class="description">Banyak</span>
+                </label>
+
+                <label>
+                    <input
+                        type="radio"
+                        name="materi"
+                        value="5"
+                    >
+                    <span class="number">5</span>
+                    <span class="description">Sangat banyak</span>
+                </label>
+
+            </div>
+
+        </div>
+
+
+        <!-- PERTANYAAN 2 -->
+
+        <div class="field">
+
+            <label class="title">
+                2. Apakah ada kendala dalam evaluasi?
+            </label>
+
+            <div class="scale">
+
+                <label>
+                    <input
+                        type="radio"
+                        name="evaluasi"
+                        value="1"
+                    >
+                    <span class="number">1</span>
+                    <span class="description">Tidak ada</span>
+                </label>
+
+                <label>
+                    <input
+                        type="radio"
+                        name="evaluasi"
+                        value="2"
+                    >
+                    <span class="number">2</span>
+                    <span class="description">Sedikit</span>
+                </label>
+
+                <label>
+                    <input
+                        type="radio"
+                        name="evaluasi"
+                        value="3"
+                    >
+                    <span class="number">3</span>
+                    <span class="description">Sedang</span>
+                </label>
+
+                <label>
+                    <input
+                        type="radio"
+                        name="evaluasi"
+                        value="4"
+                    >
+                    <span class="number">4</span>
+                    <span class="description">Banyak</span>
+                </label>
+
+                <label>
+                    <input
+                        type="radio"
+                        name="evaluasi"
+                        value="5"
+                    >
+                    <span class="number">5</span>
+                    <span class="description">Sangat banyak</span>
+                </label>
+
+            </div>
+
+        </div>
+
+
+        <!-- PERTANYAAN 3 -->
+
+        <div class="field">
+
+            <label class="title">
+                3. Apakah ada kendala dalam kenaikan kelas?
+            </label>
+
+            <div class="scale">
+
+                <label>
+                    <input
+                        type="radio"
+                        name="kenaikan"
+                        value="1"
+                    >
+                    <span class="number">1</span>
+                    <span class="description">Tidak ada</span>
+                </label>
+
+                <label>
+                    <input
+                        type="radio"
+                        name="kenaikan"
+                        value="2"
+                    >
+                    <span class="number">2</span>
+                    <span class="description">Sedikit</span>
+                </label>
+
+                <label>
+                    <input
+                        type="radio"
+                        name="kenaikan"
+                        value="3"
+                    >
+                    <span class="number">3</span>
+                    <span class="description">Sedang</span>
+                </label>
+
+                <label>
+                    <input
+                        type="radio"
+                        name="kenaikan"
+                        value="4"
+                    >
+                    <span class="number">4</span>
+                    <span class="description">Banyak</span>
+                </label>
+
+                <label>
+                    <input
+                        type="radio"
+                        name="kenaikan"
+                        value="5"
+                    >
+                    <span class="number">5</span>
+                    <span class="description">Sangat banyak</span>
+                </label>
+
+            </div>
+
+        </div>
+
+
+        <!-- FREE TEXT -->
+
+        <div class="field">
+
+            <label
+                class="title"
+                for="harapan"
+            >
+                4. Apa yang diharapkan disediakan oleh struktur?
+            </label>
+
+            <textarea
+                id="harapan"
+                rows="5"
+                maxlength="2000"
+                placeholder="Tuliskan kebutuhan atau harapan Anda..."
+            ></textarea>
+
+            <div class="hint">
+                Isian boleh dikosongkan.
+                Hanya isian minimal 15 karakter yang ditampilkan
+                pada hasil.
+            </div>
+
+        </div>
+
+
+        <button
+            id="submitButton"
+            class="btn-primary"
+            type="button"
+            onclick="submitSurvey()"
+        >
+            Kirim Survey
+        </button>
+
+    </div>
+
+
+    <!-- =================================================
+         REKAP PENGISI
+    ================================================== -->
+
+    <div class="card">
+
+        <div class="section-title">
+
+            <h2>Rekap Pengisi</h2>
+
+            <button
+                class="small-button"
+                type="button"
+                onclick="loadData()"
+            >
+                ↻ Refresh
+            </button>
+
+        </div>
+
+        <div id="loading" class="loading">
+            Memuat data...
+        </div>
+
+        <div
+            id="statsContainer"
+            style="display:none;"
+        >
+
+            <p>
+                Jumlah pengisi:
+                <strong id="totalRespondents">0</strong>
+            </p>
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+                            <th>
+                                Sektor
+                            </th>
+
+                            <th>
+                                Jumlah
+                            </th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="prefixStats"></tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         RATA-RATA
+    ================================================== -->
+
+    <div class="card">
+
+        <h2>
+            Rata-rata Hasil Isian Tertutup
+        </h2>
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>Pertanyaan</th>
+                        <th>Rata-rata</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr>
+
+                        <td>
+                            Kendala dalam pencarian materi
+                        </td>
+
+                        <td
+                            id="avgMateri"
+                            class="average"
+                        >
+                            -
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>
+                            Kendala dalam evaluasi
+                        </td>
+
+                        <td
+                            id="avgEvaluasi"
+                            class="average"
+                        >
+                            -
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>
+                            Kendala dalam kenaikan kelas
+                        </td>
+
+                        <td
+                            id="avgKenaikan"
+                            class="average"
+                        >
+                            -
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         HASIL FREE TEXT
+    ================================================== -->
+
+    <div class="card">
+
+        <h2>
+            Hasil Isian Harapan
+        </h2>
+
+        <div id="freeTextContainer">
+
+            <div class="loading">
+                Memuat...
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* ==========================================================
+   KONFIGURASI SHEETDB
+==========================================================
+
+   GANTI URL DI BAWAH DENGAN API SHEETDB ANDA.
+
+   Contoh:
+
+   https://sheetdb.io/api/v1/abc123xyz
+========================================================== */
+
+const SHEETDB_API =
+    "https://sheetdb.io/api/v1/rti2h936vojjp";
+
+
+/* ==========================================================
+   NAMA KOLOM GOOGLE SHEET
+==========================================================
+
+   BARIS PERTAMA GOOGLE SHEET HARUS:
+
+   waktu | pengisi | materi | evaluasi | kenaikan | harapan
+========================================================== */
+
+const COL_TIME     = "waktu";
+const COL_PENGISI  = "pengisi";
+const COL_MATERI   = "materi";
+const COL_EVALUASI = "evaluasi";
+const COL_KENAIKAN = "kenaikan";
+const COL_HARAPAN  = "harapan";
+
+
+/* ==========================================================
+   DATA GLOBAL
+========================================================== */
+
+let surveyData = [];
+
+
+/* ==========================================================
+   NORMALISASI PENGISI
+==========================================================
+
+   HANYA melakukan:
+
+   1. Huruf → kapital
+   2. Karakter selain A-Z, 0-9, spasi → dihapus
+
+   TIDAK:
+   - menghapus spasi depan/belakang
+   - mengubah spasi ganda menjadi satu
+   - menambahkan spasi
+   - memperbaiki format
+
+   Jadi format yang salah tetap salah.
+========================================================== */
+
+function normalizePengisi(value) {
+
+    return String(value || "")
+        .toUpperCase()
+        .replace(/[^A-Z0-9 ]/g, "");
+
+}
+
+
+/* ==========================================================
+   VALIDASI PENGISI
+==========================================================
+
+   SATU-SATUNYA FORMAT:
+
+   AB AB123 ABC12
+
+   Pola:
+
+   [A-Z]{2}
+   spasi
+   [A-Z]{2}[0-9]{3}
+   spasi
+   [A-Z]{3}[0-9]{2}
+========================================================== */
+
+function validPengisi(value) {
+    return /^\s*[A-Z]{2}\s+[A-Z]{2}[0-9]{3}\s+[A-Z]{3}[0-9]{2}\s*$/
+        .test(value);
+}
+
+
+
+/* ==========================================================
+   PESAN
+========================================================== */
+
+function showMessage(text, type) {
+
+    const message =
+        document.getElementById("message");
+
+    message.className =
+        "message " + type;
+
+    message.textContent =
+        text;
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+}
+
+
+/* ==========================================================
+   BACA DATA DARI SHEETDB
+========================================================== */
+
+async function loadSheetDBData() {
+
+    const response =
+        await fetch(
+            SHEETDB_API + "?t=" + Date.now(),
+            {
+                method: "GET",
+                cache: "no-store"
+            }
+        );
+
+    if (!response.ok) {
+
+        throw new Error(
+            "Gagal membaca SheetDB. HTTP " +
+            response.status
+        );
+
+    }
+
+    const data =
+        await response.json();
+
+    if (!Array.isArray(data)) {
+
+        throw new Error(
+            "Data SheetDB bukan array."
+        );
+
+    }
+
+    return data;
+
+}
+
+
+/* ==========================================================
+   LOAD DATA
+========================================================== */
+
+async function loadData() {
+
+    const loading =
+        document.getElementById("loading");
+
+    const stats =
+        document.getElementById(
+            "statsContainer"
+        );
+
+    loading.style.display =
+        "block";
+
+    stats.style.display =
+        "none";
+
+    try {
+
+        surveyData =
+            await loadSheetDBData();
+
+        renderStatistics();
+
+        renderAverages();
+
+        renderFreeText();
+
+        loading.style.display =
+            "none";
+
+        stats.style.display =
+            "block";
+
+    } catch (error) {
+
+        console.error(error);
+
+        loading.textContent =
+            "Tidak dapat membaca data dari SheetDB.";
+
+    }
+
+}
+
+
+/* ==========================================================
+   REKAP PENGISI
+========================================================== */
+
+function renderStatistics() {
+
+    const validRows =
+        surveyData.filter(row => {
+
+            return String(
+                row[COL_PENGISI] || ""
+            ).trim() !== "";
+
+        });
+
+
+    document.getElementById(
+        "totalRespondents"
+    ).textContent =
+        validRows.length;
+
+
+    const counts = {};
+
+
+    validRows.forEach(row => {
+
+        const pengisi =
+            String(
+                row[COL_PENGISI] || ""
+            );
+
+
+        /*
+         * Karena format sudah diketahui:
+         *
+         * AB AB123 ABC12
+         *
+         * dua huruf pertama selalu
+         * berada di posisi 0 dan 1.
+         */
+
+        const prefix =
+            pengisi.substring(0, 2);
+
+
+        if (/^[A-Z]{2}$/.test(prefix)) {
+
+            counts[prefix] =
+                (counts[prefix] || 0) + 1;
+
+        }
+
+    });
+
+
+    const sorted =
+        Object.entries(counts)
+            .sort((a, b) =>
+                a[0].localeCompare(b[0])
+            );
+
+
+    const tbody =
+        document.getElementById(
+            "prefixStats"
+        );
+
+
+    tbody.innerHTML = "";
+
+
+    if (sorted.length === 0) {
+
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="2" class="empty">
+                    Belum ada data.
+                </td>
+            </tr>
+        `;
+
+        return;
+
+    }
+
+
+    sorted.forEach(
+        ([prefix, count]) => {
+
+            const tr =
+                document.createElement("tr");
+
+            tr.innerHTML = `
+                <td>
+                    <strong>
+                        ${escapeHtml(prefix)}
+                    </strong>
+                </td>
+
+                <td>
+                    ${count}
+                </td>
+            `;
+
+            tbody.appendChild(tr);
+
+        }
+    );
+
+}
+
+
+/* ==========================================================
+   RATA-RATA
+========================================================== */
+
+function calculateAverage(column) {
+
+    const values =
+        surveyData
+            .map(row =>
+                Number(row[column])
+            )
+            .filter(value =>
+                Number.isFinite(value) &&
+                value >= 1 &&
+                value <= 5
+            );
+
+
+    if (values.length === 0) {
+        return "-";
+    }
+
+
+    const total =
+        values.reduce(
+            (sum, value) =>
+                sum + value,
+            0
+        );
+
+
+    return (
+        total / values.length
+    ).toFixed(2);
+
+}
+
+
+/* ==========================================================
+   TAMPILKAN RATA-RATA
+========================================================== */
+
+function renderAverages() {
+
+    document.getElementById(
+        "avgMateri"
+    ).textContent =
+        calculateAverage(
+            COL_MATERI
+        );
+
+
+    document.getElementById(
+        "avgEvaluasi"
+    ).textContent =
+        calculateAverage(
+            COL_EVALUASI
+        );
+
+
+    document.getElementById(
+        "avgKenaikan"
+    ).textContent =
+        calculateAverage(
+            COL_KENAIKAN
+        );
+
+}
+
+
+/* ==========================================================
+   PARSE WAKTU
+========================================================== */
+
+function parseDate(value) {
+
+    if (!value) {
+        return new Date(0);
+    }
+
+
+    const date =
+        new Date(value);
+
+
+    if (!isNaN(date.getTime())) {
+        return date;
+    }
+
+
+    /*
+     * Dukungan format:
+     *
+     * Date(2026,7,15,10,20,30)
+     */
+
+    const match =
+        String(value).match(
+            /Date\((\d+),(\d+),(\d+),(\d+),(\d+),(\d+)\)/
+        );
+
+
+    if (match) {
+
+        return new Date(
+            Number(match[1]),
+            Number(match[2]),
+            Number(match[3]),
+            Number(match[4]),
+            Number(match[5]),
+            Number(match[6])
+        );
+
+    }
+
+
+    return new Date(0);
+
+}
+
+
+/* ==========================================================
+   FORMAT WAKTU
+========================================================== */
+
+function formatDate(value) {
+
+    const date =
+        parseDate(value);
+
+
+    if (date.getTime() === 0) {
+        return value || "-";
+    }
+
+
+    return date.toLocaleString(
+        "id-ID",
+        {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit"
+        }
+    );
+
+}
+
+
+/* ==========================================================
+   FREE TEXT
+==========================================================
+
+   Hanya menampilkan harapan dengan:
+   minimal 15 karakter.
+
+   Terbaru → paling atas.
+========================================================== */
+
+function renderFreeText() {
+
+    const container =
+        document.getElementById(
+            "freeTextContainer"
+        );
+
+
+    const rows =
+        surveyData
+            .map(row => ({
+
+                waktu:
+                    row[COL_TIME] || "",
+
+                pengisi:
+                    row[COL_PENGISI] || "",
+
+                harapan:
+                    row[COL_HARAPAN] || ""
+
+            }))
+            .filter(item =>
+                String(
+                    item.harapan
+                ).trim().length >= 15
+            );
+
+
+    rows.sort((a, b) => {
+
+        return (
+            parseDate(b.waktu) -
+            parseDate(a.waktu)
+        );
+
+    });
+
+
+    if (rows.length === 0) {
+
+        container.innerHTML = `
+            <div class="empty">
+                Belum ada isian minimal
+                15 karakter.
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    const table =
+        document.createElement("table");
+
+
+    table.innerHTML = `
+        <thead>
+            <tr>
+                <th>Waktu Mengisi</th>
+                <th>Pengisi</th>
+                <th>Isian</th>
+            </tr>
+        </thead>
+
+        <tbody></tbody>
+    `;
+
+
+    const tbody =
+        table.querySelector("tbody");
+
+
+    rows.forEach(item => {
+
+        const tr =
+            document.createElement("tr");
+
+
+        tr.innerHTML = `
+            <td>
+                ${escapeHtml(
+                    formatDate(item.waktu)
+                )}
+            </td>
+
+            <td>
+                <strong>
+                    ${escapeHtml(
+                        item.pengisi
+                    )}
+                </strong>
+            </td>
+
+            <td>
+                ${escapeHtml(
+                    item.harapan
+                )}
+            </td>
+        `;
+
+
+        tbody.appendChild(tr);
+
+    });
+
+
+    container.innerHTML = "";
+
+    container.appendChild(table);
+
+}
+
+
+/* ==========================================================
+   SUBMIT SURVEY
+========================================================== */
+
+async function submitSurvey() {
+
+    const button =
+        document.getElementById(
+            "submitButton"
+        );
+
+
+    const pengisiInput =
+        document.getElementById(
+            "pengisi"
+        );
+
+
+    /*
+     * TIDAK menggunakan trim().
+     *
+     * Karena spasi merupakan bagian dari
+     * pola yang harus tepat.
+     */
+
+    const pengisi =
+        pengisiInput.value;
+
+
+    /* ======================================================
+       VALIDASI FORMAT PENGISI
+    ====================================================== */
+
+    if (!validPengisi(pengisi)) {
+
+        showMessage(
+            "Format pengisi harus tepat: AB AB123 ABC12",
+            "error"
+        );
+
+        pengisiInput.focus();
+
+        return;
+
+    }
+
+
+    /* ======================================================
+       AMBIL DATA TERBARU
+       Untuk mencegah pengisian dua kali.
+    ====================================================== */
+
+    try {
+
+        surveyData =
+            await loadSheetDBData();
+
+    } catch (error) {
+
+        console.error(error);
+
+        showMessage(
+            "Tidak dapat memeriksa data pengisi. Pengiriman dibatalkan.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    /* ======================================================
+       CEK DUPLIKASI
+    ====================================================== */
+
+    const duplicate =
+        surveyData.some(row => {
+
+            const existing =
+                String(
+                    row[COL_PENGISI] || ""
+                );
+
+
+            return existing === pengisi;
+
+        });
+
+
+    if (duplicate) {
+
+        showMessage(
+            "Pengisi tersebut sudah pernah mengisi survey. Pengisian kedua tidak diperbolehkan.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    /* ======================================================
+       AMBIL JAWABAN
+    ====================================================== */
+
+    const materi =
+        document.querySelector(
+            'input[name="materi"]:checked'
+        );
+
+
+    const evaluasi =
+        document.querySelector(
+            'input[name="evaluasi"]:checked'
+        );
+
+
+    const kenaikan =
+        document.querySelector(
+            'input[name="kenaikan"]:checked'
+        );
+
+
+    const harapan =
+        document.getElementById(
+            "harapan"
+        ).value.trim();
+
+
+    /* ======================================================
+       VALIDASI PERTANYAAN
+    ====================================================== */
+
+    if (!materi) {
+
+        showMessage(
+            "Silakan jawab pertanyaan nomor 1.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    if (!evaluasi) {
+
+        showMessage(
+            "Silakan jawab pertanyaan nomor 2.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    if (!kenaikan) {
+
+        showMessage(
+            "Silakan jawab pertanyaan nomor 3.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    /* ======================================================
+       DISABLE BUTTON
+    ====================================================== */
+
+    button.disabled = true;
+
+    button.textContent =
+        "Mengirim...";
+
+
+    /* ======================================================
+       DATA
+    ====================================================== */
+
+    const payload = {
+
+        [COL_TIME]:
+            new Date().toISOString(),
+
+        [COL_PENGISI]:
+            pengisi,
+
+        [COL_MATERI]:
+            materi.value,
+
+        [COL_EVALUASI]:
+            evaluasi.value,
+
+        [COL_KENAIKAN]:
+            kenaikan.value,
+
+        [COL_HARAPAN]:
+            harapan
+
+    };
+
+
+    /* ======================================================
+       KIRIM KE SHEETDB
+    ====================================================== */
+
+    try {
+
+        const response =
+            await fetch(
+                SHEETDB_API,
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        data: payload
+                    })
+                }
+            );
+
+
+        const result =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                JSON.stringify(result)
+            );
+
+        }
+
+
+        /* ==================================================
+           BERHASIL
+        ================================================== */
+
+        showMessage(
+            "Terima kasih. Jawaban Anda berhasil disimpan.",
+            "success"
+        );
+
+
+        /* RESET */
+
+        pengisiInput.value = "";
+
+        document.getElementById(
+            "harapan"
+        ).value = "";
+
+
+        document
+            .querySelectorAll(
+                'input[type="radio"]'
+            )
+            .forEach(input => {
+
+                input.checked = false;
+
+            });
+
+
+        /* REFRESH */
+
+        await loadData();
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        showMessage(
+            "Data gagal disimpan. Silakan coba lagi.",
+            "error"
+        );
+
+    } finally {
+
+        button.disabled = false;
+
+        button.textContent =
+            "Kirim Survey";
+
+    }
+
+}
+
+
+/* ==========================================================
+   INPUT PENGISI
+==========================================================
+
+   Otomatis kapital.
+
+   Tidak:
+   - menambahkan spasi
+   - menghapus spasi ganda
+   - memperbaiki format
+
+   Jadi yang salah tetap akan ditolak.
+========================================================== */
+
+document
+    .getElementById("pengisi")
+    .addEventListener(
+        "input",
+        function() {
+
+            const position =
+                this.selectionStart;
+
+
+            this.value =
+                normalizePengisi(
+                    this.value
+                );
+
+
+            try {
+
+                this.setSelectionRange(
+                    position,
+                    position
+                );
+
+            } catch (e) {}
+
+        }
+    );
+
+
+/* ==========================================================
+   ENTER PADA PENGISI
+========================================================== */
+
+document
+    .getElementById("pengisi")
+    .addEventListener(
+        "keydown",
+        function(event) {
+
+            if (event.key === "Enter") {
+
+                event.preventDefault();
+
+            }
+
+        }
+    );
+
+
+/* ==========================================================
+   ESCAPE HTML
+========================================================== */
+
+function escapeHtml(value) {
+
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+
+/* ==========================================================
+   LOAD SAAT HALAMAN DIBUKA
+========================================================== */
+
+window.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+        loadData();
+
+    }
+);
+
+</script>
+
+</body>
+</html>
