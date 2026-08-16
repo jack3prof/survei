@@ -1,0 +1,611 @@
+import sqlite3
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from openpyxl.drawing.image import Image
+from openpyxl.styles import Font, Alignment, PatternFill, Border, Side
+from reportlab.lib.pagesizes import letter, A4
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image as RLImage, Table, TableStyle, KeepTogether
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib import colors
+import io
+import datetime
+import json
+
+# ==========================================
+# 1. PARAMETER FILTER TANGGAL & SETUP METRIK
+# ==========================================
+# Input tanggal batas (YYYY-MM-DD) untuk query SQL
+START_DATE_RAW = "2026-08-01"
+END_DATE_RAW = "2026-08-10"
+
+# Format ke dd MMM yy (Contoh: 01 Aug 26 & 11 Aug 26) untuk tampilan laporan
+start_dt = datetime.datetime.strptime(START_DATE_RAW, "%Y-%m-%d")
+end_dt = datetime.datetime.strptime(END_DATE_RAW, "%Y-%m-%d")
+
+START_DATE = start_dt.strftime("%d %b %y")
+END_DATE = end_dt.strftime("%d %b %y")
+
+sns.set_theme(style="whitegrid")
+plt.rcParams.update({
+    'font.size': 8,
+    'axes.labelsize': 9,
+    'axes.titlesize': 10,
+    'xtick.labelsize': 8,
+    'ytick.labelsize': 8,
+    'figure.titlesize': 11
+})
+
+conn = sqlite3.connect("database.db")
+
+# Hitung Total User Terdaftar di Seluruh Database
+df_total_user = pd.read_sql_query("SELECT COUNT(*) as total FROM users", conn)
+TOTAL_USER_REGISTERED = df_total_user['total'].iloc[0] if not df_total_user.empty and df_total_user['total'].iloc[0] > 0 else 1
+
+# Hitung Pasangan Unik (id_kelas + id_sektor) dari tabel users
+df_total_kelas = pd.read_sql_query("""
+    SELECT COUNT(DISTINCT id_kelas || '-' || id_sektor) as total 
+    FROM users 
+    WHERE id_kelas IS NOT NULL AND id_kelas != ''
+""", conn)
+TOTAL_KELAS_REGISTERED = df_total_kelas['total'].iloc[0] if not df_total_kelas.empty and df_total_kelas['total'].iloc[0] > 0 else 0
+
+# Hitung Total User Unik yang Menyampaikan Laporan IB di Periode Ini
+df_total_ib = pd.read_sql_query(f"""
+    SELECT COUNT(DISTINCT telegram_id) as total 
+    FROM lapor_ib 
+    WHERE Waktu BETWEEN '{START_DATE_RAW}' AND '{END_DATE_RAW}'
+""", conn)
+TOTAL_USER_IB_REGISTERED = df_total_ib['total'].iloc[0] if not df_total_ib.empty else 0
+
+# ==========================================
+# FUNGSI ANOTASI ANGKA DI LUAR BATANG
+# ==========================================
+def annotate_bars_outside(ax, chart_type="bar", is_multi=False):
+    """Menampilkan SELURUH angka/label data di LUAR batang diagram."""
+    all_vals = []
+    for container in ax.containers:
+        for rect in container:
+            val = rect.get_width() if chart_type == "bar_horizontal" else rect.get_height()
+            if not pd.isna(val) and val > 0:
+                all_vals.append(val)
+                
+    max_val = max(all_vals) if all_vals else 1
+
+    for container in ax.containers:
+        for rect in container:
+            if chart_type == "bar_horizontal":
+                val = rect.get_width()
+                if pd.isna(val) or val <= 0:
+                    continue
+                val_str = f"{int(round(val))}"
+                y = rect.get_y() + rect.get_height() / 2
+                
+                ax.annotate(val_str,
+                            xy=(val, y),
+                            xytext=(val + (max_val * 0.02), y),
+                            ha='left', va='center',
+                            fontsize=7, fontweight='bold', color='black')
+            else:
+                val = rect.get_height()
+                if pd.isna(val) or val <= 0:
+                    continue
+                val_str = f"{int(round(val))}"
+                x = rect.get_x() + rect.get_width() / 2
+                
+                rotation_angle = 90 if is_multi else 0
+                
+                ax.annotate(val_str,
+                            xy=(x, val),
+                            xytext=(x, val + (max_val * 0.02)),
+                            ha='center', va='bottom',
+                            rotation=rotation_angle,
+                            fontsize=6.5 if is_multi else 7, 
+                            fontweight='bold', color='black')
+
+# ==========================================
+# 2. KONFIGURASI QUERY & NARASI
+# ==========================================
+queries = [
+    {
+        "sheet": "1. Partisipasi",
+        "title": "Jumlah User Terdaftar per Sektor",
+        "show_all_in_chart": False,
+        "sql": f"""
+            SELECT 
+                id_sektor as Sektor, 
+                COUNT(telegram_id) as "Total User Terdaftar",
+                ROUND((COUNT(telegram_id) * 100.0 / {TOTAL_USER_REGISTERED}), 1) as "Proporsi (%)"
+            FROM users 
+            GROUP BY id_sektor
+
+            UNION ALL
+
+            SELECT 
+                'ALL' as Sektor,
+                SUM(cnt) as "Total User Terdaftar",
+                ROUND(SUM(prop), 1) as "Proporsi (%)"
+            FROM (
+                SELECT 
+                    COUNT(telegram_id) as cnt, 
+                    (COUNT(telegram_id) * 100.0 / {TOTAL_USER_REGISTERED}) as prop
+                FROM users 
+                GROUP BY id_sektor
+            )
+        """,
+        "chart_type": "bar", "x": "Sektor", "y": "Total User Terdaftar",
+        "xlabel": "Sektor", "ylabel": "Jumlah User Terdaftar",
+        "narasi": f"Grafik menampilkan distribusi jumlah user terdaftar per sektor. Baris ALL pada tabel menampilkan total akumulasi. Total user terdaftar di seluruh database adalah {TOTAL_USER_REGISTERED} user."
+    },
+    {
+        "sheet": "2. Keaktifan Yaumiyan",
+        "title": "Keaktifan Pengisian Yaumiyan per Sektor (User Aktif vs Terdaftar)",
+        "show_all_in_chart": False,
+        "sql": f"""
+            SELECT 
+                u.id_sektor as Sektor,
+                COUNT(DISTINCT y.telegram_id) as "User Mengisi",
+                COUNT(DISTINCT u.telegram_id) as "User Terdaftar",
+                ROUND((COUNT(DISTINCT y.telegram_id) * 100.0 / COUNT(DISTINCT u.telegram_id)), 1) as "Tingkat Keaktifan (%)"
+            FROM users u
+            LEFT JOIN yaumiyan y ON u.telegram_id = y.telegram_id 
+                AND y.waktu BETWEEN '{START_DATE_RAW}' AND '{END_DATE_RAW}'
+            GROUP BY u.id_sektor
+
+            UNION ALL
+
+            SELECT 
+                'ALL' as Sektor,
+                SUM(u_mengisi) as "User Mengisi",
+                SUM(u_terdaftar) as "User Terdaftar",
+                ROUND((SUM(u_mengisi) * 100.0 / NULLIF(SUM(u_terdaftar), 0)), 1) as "Tingkat Keaktifan (%)"
+            FROM (
+                SELECT 
+                    COUNT(DISTINCT y.telegram_id) as u_mengisi,
+                    COUNT(DISTINCT u.telegram_id) as u_terdaftar
+                FROM users u
+                LEFT JOIN yaumiyan y ON u.telegram_id = y.telegram_id 
+                    AND y.waktu BETWEEN '{START_DATE_RAW}' AND '{END_DATE_RAW}'
+                GROUP BY u.id_sektor
+            )
+        """,
+        "chart_type": "bar_multi",
+        "xlabel": "Sektor", "ylabel": "Jumlah User",
+        "narasi": f"Membandingkan jumlah user yang aktif mengisi Yaumiyan periode {START_DATE} s/d {END_DATE} terhadap total user terdaftar di sektor tersebut. Baris ALL pada tabel menampilkan penjumlahan total."
+    },
+    {
+        "sheet": "3. Keaktifan Kelas",
+        "title": "Keaktifan Kelas per Sektor (Kelas Aktif vs Terdaftar)",
+        "show_all_in_chart": False,
+        "sql": f"""
+            SELECT 
+                u.id_sektor as Sektor,
+                COUNT(DISTINCT b.id_kelas) as "Kelas Aktif Mengisi",
+                COUNT(DISTINCT u.id_kelas) as "Total Kelas Terdaftar",
+                ROUND((COUNT(DISTINCT b.id_kelas) * 100.0 / NULLIF(COUNT(DISTINCT u.id_kelas), 0)), 1) as "Rasio Keaktifan Kelas (%)"
+            FROM users u
+            LEFT JOIN baromij b ON u.id_sektor = b.id_sektor 
+                AND b.Waktu BETWEEN '{START_DATE_RAW}' AND '{END_DATE_RAW}'
+            GROUP BY u.id_sektor
+
+            UNION ALL
+
+            SELECT 
+                'ALL' as Sektor,
+                SUM(k_aktif) as "Kelas Aktif Mengisi",
+                SUM(k_total) as "Total Kelas Terdaftar",
+                ROUND((SUM(k_aktif) * 100.0 / NULLIF(SUM(k_total), 0)), 1) as "Rasio Keaktifan Kelas (%)"
+            FROM (
+                SELECT 
+                    COUNT(DISTINCT b.id_kelas) as k_aktif,
+                    COUNT(DISTINCT u.id_kelas) as k_total
+                FROM users u
+                LEFT JOIN baromij b ON u.id_sektor = b.id_sektor 
+                    AND b.Waktu BETWEEN '{START_DATE_RAW}' AND '{END_DATE_RAW}'
+                GROUP BY u.id_sektor
+            )
+        """,
+        "chart_type": "bar_multi",
+        "xlabel": "Sektor", "ylabel": "Jumlah Kelas",
+        "narasi": f"Grafik memperlihatkan perbandingan jumlah ID Kelas yang aktif mengisi Baromij terhadap total ID Kelas terdaftar per sektor pada periode {START_DATE} s/d {END_DATE}. Baris ALL pada tabel menyajikan total keseluruhan. Jumlah seluruh kelas di database adalah {TOTAL_KELAS_REGISTERED} kelas."
+    },
+    {
+        "sheet": "4. Kepatuhan IB",
+        "title": "Kepatuhan Pelaporan IB per Sektor (User Mengisi vs Terdaftar)",
+        "show_all_in_chart": False,
+        "sql": f"""
+            SELECT 
+                u.id_sektor as Sektor,
+                COUNT(DISTINCT ib.telegram_id) as "User Mengisi IB",
+                COUNT(DISTINCT u.telegram_id) as "User Terdaftar Sektor",
+                ROUND((COUNT(DISTINCT ib.telegram_id) * 100.0 / COUNT(DISTINCT u.telegram_id)), 1) as "Kepatuhan Sektor (%)"
+            FROM users u
+            LEFT JOIN lapor_ib ib ON u.telegram_id = ib.telegram_id 
+                AND ib.Waktu BETWEEN '{START_DATE_RAW}' AND '{END_DATE_RAW}'
+            GROUP BY u.id_sektor
+
+            UNION ALL
+
+            SELECT 
+                'ALL' as Sektor,
+                SUM(u_ib) as "User Mengisi IB",
+                SUM(u_terdaftar) as "User Terdaftar Sektor",
+                ROUND((SUM(u_ib) * 100.0 / NULLIF(SUM(u_terdaftar), 0)), 1) as "Kepatuhan Sektor (%)"
+            FROM (
+                SELECT 
+                    COUNT(DISTINCT ib.telegram_id) as u_ib,
+                    COUNT(DISTINCT u.telegram_id) as u_terdaftar
+                FROM users u
+                LEFT JOIN lapor_ib ib ON u.telegram_id = ib.telegram_id 
+                    AND ib.Waktu BETWEEN '{START_DATE_RAW}' AND '{END_DATE_RAW}'
+                GROUP BY u.id_sektor
+            )
+        """,
+        "chart_type": "bar_multi",
+        "xlabel": "Sektor", "ylabel": "Jumlah User",
+        "narasi": f"Grafik menyajikan perbandingan jumlah user yang menyampaikan laporan IB pada rentang {START_DATE} s/d {END_DATE} terhadap total user terdaftar pada sektor tersebut. Baris ALL pada tabel menampilkan total penjumlahan. Total user yang menyampaikan laporan IB adalah {TOTAL_USER_IB_REGISTERED} user."
+    },
+    {
+        "sheet": "5. Capaian Yaumiyan",
+        "title": "Rata-rata Capaian Yaumiyan Per Sektor",
+        "show_all_in_chart": True,
+        "sql": f"""
+            SELECT id_sektor as Sektor,
+                   ROUND(AVG(sholat_jamaah)) as "Sholat Jamaah",
+                   ROUND(AVG(qiyamul_lail)) as "Qiyamul Lail",
+                   ROUND(AVG(tilawah)) as "Tilawah",
+                   ROUND(AVG(shoum_sunnah)) as "Shoum Sunnah",
+                   ROUND(AVG(olah_raga)) as "Olah Raga",
+                   ROUND(AVG(al_matsurot)) as "Al-Matsurot"
+            FROM yaumiyan
+            WHERE waktu BETWEEN '{START_DATE_RAW}' AND '{END_DATE_RAW}'
+            GROUP BY id_sektor
+
+            UNION ALL
+
+            SELECT 'ALL' as Sektor,
+                   ROUND(AVG(sj)) as "Sholat Jamaah",
+                   ROUND(AVG(ql)) as "Qiyamul Lail",
+                   ROUND(AVG(tl)) as "Tilawah",
+                   ROUND(AVG(ss)) as "Shoum Sunnah",
+                   ROUND(AVG(or_)) as "Olah Raga",
+                   ROUND(AVG(am)) as "Al-Matsurot"
+            FROM (
+                SELECT 
+                    AVG(sholat_jamaah) as sj,
+                    AVG(qiyamul_lail) as ql,
+                    AVG(tilawah) as tl,
+                    AVG(shoum_sunnah) as ss,
+                    AVG(olah_raga) as or_,
+                    AVG(al_matsurot) as am
+                FROM yaumiyan
+                WHERE waktu BETWEEN '{START_DATE_RAW}' AND '{END_DATE_RAW}'
+                GROUP BY id_sektor
+            )
+        """,
+        "chart_type": "bar_multi",
+        "xlabel": "Sektor", "ylabel": "Skor Rata-rata",
+        "narasi": f"Diagram multi-batang memperlihatkan perbandingan performa rata-rata amalan yaumiyan antar sektor serta rata-rata seluruh sektor (ALL) pada periode {START_DATE} s/d {END_DATE}."
+    },
+    {
+        "sheet": "6. Capaian Baromij",
+        "title": "Persentase Capaian Baromij Per Sektor & Total Database (%)",
+        "show_all_in_chart": True,
+        "sql": f"""
+        SELECT
+            id_sektor as Sektor,
+            ROUND(AVG(CASE WHEN walashadir = 'ya' THEN 1 ELSE 0 END) * 100) AS "Walashadir",
+            ROUND(AVG(CASE WHEN tilawah_hafalan = 'ya' THEN 1 ELSE 0 END) * 100) AS "Tilawah & Hafalan",
+            ROUND(AVG(CASE WHEN kalam_naqib = 'ya' THEN 1 ELSE 0 END) * 100) AS "Kalam Naqib",
+            ROUND(AVG(CASE WHEN membaca_mr = 'ya' THEN 1 ELSE 0 END) * 100) AS "Membaca MR",
+            ROUND(AVG(CASE WHEN tatsqif_usroh = 'ya' THEN 1 ELSE 0 END) * 100) AS "Tatsqif Usroh",
+            ROUND(AVG(CASE WHEN talimat = 'ya' THEN 1 ELSE 0 END) * 100) AS "Talimat",
+            ROUND(AVG(CASE WHEN monev_program = 'ya' THEN 1 ELSE 0 END) * 100) AS "Monev Program",
+            ROUND(AVG(CASE WHEN qodhoya_rawai = 'ya' THEN 1 ELSE 0 END) * 100) AS "Qodhoya Rawai",
+            ROUND(AVG(CASE WHEN kelasoffline = 'ya' THEN 1 ELSE 0 END) * 100) AS "Kelas Offline"
+        FROM baromij
+        WHERE Waktu BETWEEN '{START_DATE_RAW}' AND '{END_DATE_RAW}'
+        GROUP BY id_sektor
+
+        UNION ALL
+
+        SELECT
+            'ALL' as Sektor,
+            ROUND(AVG(CASE WHEN walashadir = 'ya' THEN 1 ELSE 0 END) * 100) AS "Walashadir",
+            ROUND(AVG(CASE WHEN tilawah_hafalan = 'ya' THEN 1 ELSE 0 END) * 100) AS "Tilawah & Hafalan",
+            ROUND(AVG(CASE WHEN kalam_naqib = 'ya' THEN 1 ELSE 0 END) * 100) AS "Kalam Naqib",
+            ROUND(AVG(CASE WHEN membaca_mr = 'ya' THEN 1 ELSE 0 END) * 100) AS "Membaca MR",
+            ROUND(AVG(CASE WHEN tatsqif_usroh = 'ya' THEN 1 ELSE 0 END) * 100) AS "Tatsqif Usroh",
+            ROUND(AVG(CASE WHEN talimat = 'ya' THEN 1 ELSE 0 END) * 100) AS "Talimat",
+            ROUND(AVG(CASE WHEN monev_program = 'ya' THEN 1 ELSE 0 END) * 100) AS "Monev Program",
+            ROUND(AVG(CASE WHEN qodhoya_rawai = 'ya' THEN 1 ELSE 0 END) * 100) AS "Qodhoya Rawai",
+            ROUND(AVG(CASE WHEN kelasoffline = 'ya' THEN 1 ELSE 0 END) * 100) AS "Kelas Offline"
+        FROM baromij
+        WHERE Waktu BETWEEN '{START_DATE_RAW}' AND '{END_DATE_RAW}'
+        """,
+        "chart_type": "bar_multi",
+        "xlabel": "Sektor", "ylabel": "Persentase (%)",
+        "narasi": f"Menampilkan persentase keberhasilan pemenuhan indikator-indikator Baromij pada tiap sektor serta rata-rata capaian seluruh database (kolom ALL) pada periode {START_DATE} s/d {END_DATE}."
+    },
+    {
+        "sheet": "7. Yaumiyan Gender",
+        "title": "Perbandingan Rata-rata Yaumiyan Berdasarkan Gender",
+        "show_all_in_chart": True,
+        "sql": f"""
+        SELECT
+            CASE
+                WHEN id_anggota LIKE 'I%' THEN 'Ikhwan'
+                ELSE 'Akhwat'
+            END AS Gender,
+            ROUND(AVG(sholat_jamaah)) as "Sholat Jamaah",
+            ROUND(AVG(qiyamul_lail)) as "Qiyamul Lail",
+            ROUND(AVG(tilawah)) as "Tilawah",
+            ROUND(AVG(shoum_sunnah)) as "Shoum Sunnah",
+            ROUND(AVG(olah_raga)) as "Olah Raga",
+            ROUND(AVG(al_matsurot)) as "Al-Matsurot"
+        FROM yaumiyan
+        WHERE (id_anggota LIKE 'I%' OR id_anggota LIKE 'A%')
+          AND waktu BETWEEN '{START_DATE_RAW}' AND '{END_DATE_RAW}'
+        GROUP BY Gender
+        """,
+        "chart_type": "bar_multi",
+        "xlabel": "Gender", "ylabel": "Skor Rata-rata",
+        "narasi": f"Diagram perbandingan pencapaian rata-rata amalan harian antara demografi Ikhwan dan Akhwat pada periode {START_DATE} s/d {END_DATE}."
+    }
+]
+
+# ==========================================
+# 3. PROSES PEMBUATAN EXCEL (XLSX), PDF & HTML
+# ==========================================
+base_filename = f"Laporan Seblak {START_DATE} sd {END_DATE}"
+excel_output = f"{base_filename}.xlsx"
+pdf_output = f"{base_filename}.pdf"
+html_output = "index.html"  # Disimpan sebagai index.html agar langsung dibuka oleh GitHub Pages
+
+# Penyiapan Dokumen PDF
+pdf_doc = SimpleDocTemplate(pdf_output, pagesize=A4, rightMargin=30, leftMargin=30, topMargin=30, bottomMargin=30)
+pdf_story = []
+styles = getSampleStyleSheet()
+
+title_style = ParagraphStyle('PDFTitle', parent=styles['Heading1'], fontSize=16, leading=20, alignment=1, spaceAfter=10)
+subtitle_style = ParagraphStyle('PDFSubTitle', parent=styles['Normal'], fontSize=10, leading=12, alignment=1, textColor=colors.gray, spaceAfter=20)
+h2_style = ParagraphStyle('PDFH2', parent=styles['Heading2'], fontSize=11, leading=14, spaceBefore=5, spaceAfter=5)
+body_style = ParagraphStyle('PDFBody', parent=styles['BodyText'], fontSize=8.5, leading=11, spaceAfter=8)
+
+pdf_story.append(Paragraph("<b>LAPORAN EVALUASI AKTIVITAS & PARTISIPASI</b>", title_style))
+pdf_story.append(Paragraph(f"Periode Data: <b>{START_DATE}</b> s/d <b>{END_DATE}</b><br/><b>Total User Terdaftar Database: {TOTAL_USER_REGISTERED} User | Total Kelas: {TOTAL_KELAS_REGISTERED} Kelas</b>", subtitle_style))
+
+html_sections = []
+
+with pd.ExcelWriter(excel_output, engine="openpyxl") as writer:
+    for idx, q in enumerate(queries):
+        sheet_name = q["sheet"]
+        
+        # Eksekusi Query
+        try:
+            df = pd.read_sql_query(q["sql"], conn)
+        except Exception as e:
+            df = pd.read_sql_query(q["sql"].split("WHERE")[0], conn)
+        
+        # Ekspor Dataframe Utuh (Termasuk ALL) ke Excel
+        df.to_excel(writer, sheet_name=sheet_name, startrow=3, startcol=1, index=False)
+        
+        ws = writer.sheets[sheet_name]
+        ws["B2"] = q["title"]
+        ws["B2"].font = Font(size=13, bold=True)
+        
+        ws["B3"] = f"Periode: {START_DATE} s/d {END_DATE} | {q['narasi']}"
+        ws["B3"].font = Font(size=9, italic=True, color="555555")
+
+        if not df.empty:
+            # Filter dataframe khusus untuk grafik jika show_all_in_chart == False
+            first_col = df.columns[0]
+            if not q.get("show_all_in_chart", True):
+                df_chart = df[df[first_col] != "ALL"].copy()
+            else:
+                df_chart = df.copy()
+
+            # --- PEMBUATAN GRAFIK MATPLOTLIB (Untuk PDF & Excel) ---
+            figsize = (7.2, 3.8) if sheet_name in ["5. Capaian Yaumiyan", "6. Capaian Baromij"] else (6.5, 3.8)
+            fig, ax = plt.subplots(figsize=figsize)
+            is_multi = False
+            
+            if q["chart_type"] == "bar":
+                sns.barplot(data=df_chart, x=q["x"], y=q["y"], ax=ax, palette="Blues_d", hue=q["x"], legend=False)
+                ax.margins(y=0.25)
+            elif q["chart_type"] == "bar_horizontal":
+                sns.barplot(data=df_chart, x=q["x"], y=q["y"], ax=ax, palette="Purples_d", hue=q["y"], legend=False)
+                ax.margins(x=0.25)
+            elif q["chart_type"] == "bar_multi":
+                is_multi = True
+                plot_cols = [col for col in df_chart.columns[1:] if "(%)" not in col]
+                
+                df_plot = df_chart.set_index(first_col)[plot_cols]
+                
+                bar_width = 0.85 if sheet_name == "6. Capaian Baromij" else 0.75
+                df_plot.plot(kind="bar", ax=ax, cmap="tab10", width=bar_width)
+                
+                plt.xticks(rotation=0)
+                ax.legend(bbox_to_anchor=(1.01, 1), loc='upper left', borderaxespad=0, fontsize=7)
+                ax.margins(y=0.30)
+                
+                if sheet_name in ["5. Capaian Yaumiyan", "6. Capaian Baromij"]:
+                    ax.set_xlim(-0.5, len(df_plot) - 0.5)
+
+            ax.set_title(q["title"])
+            ax.set_xlabel(q["xlabel"])
+            ax.set_ylabel(q["ylabel"])
+
+            # ANOTASI ANGKA DI LUAR BATANG
+            annotate_bars_outside(ax, chart_type=q["chart_type"], is_multi=is_multi)
+
+            plt.tight_layout()
+            
+            # Simpan Grafik ke Buffer Utama
+            img_buf = io.BytesIO()
+            plt.savefig(img_buf, format='png', dpi=150)
+            
+            # Duplikasi buffer untuk Excel dan PDF
+            img_buf_excel = io.BytesIO(img_buf.getvalue())
+            img_buf_pdf = io.BytesIO(img_buf.getvalue())
+            
+            # Tambahkan Grafik ke Excel
+            col_letter = chr(65 + len(df.columns) + 2) 
+            img_excel = Image(img_buf_excel)
+            ws.add_image(img_excel, f"{col_letter}3")
+            
+            # --- PENYUSUNAN PDF ---
+            img_width = 440 if sheet_name in ["5. Capaian Yaumiyan", "6. Capaian Baromij"] else 420
+            section_elements = [
+                Paragraph(f"<b>{q['sheet']}: {q['title']}</b>", h2_style),
+                Paragraph(f"<i></i> {q['narasi']}", body_style),
+                RLImage(img_buf_pdf, width=img_width, height=240),
+                Spacer(1, 15)
+            ]
+            pdf_story.append(KeepTogether(section_elements))
+            plt.close(fig)
+
+            # --- EKSTRAKSI DATA UNTUK HTML (CHART.JS & TABEL) ---
+            # Labels & Datasets untuk Chart.js (Menggunakan df_chart tanpa ALL jika query 1-4)
+            chart_labels = df_chart[first_col].astype(str).tolist()
+            chart_datasets = []
+            
+            color_palette = [
+                'rgba(54, 162, 235, 0.7)', 'rgba(255, 99, 132, 0.7)',
+                'rgba(75, 192, 192, 0.7)', 'rgba(255, 206, 86, 0.7)',
+                'rgba(153, 102, 255, 0.7)', 'rgba(255, 159, 64, 0.7)'
+            ]
+
+            if q["chart_type"] == "bar":
+                chart_datasets.append({
+                    "label": q["y"],
+                    "data": df_chart[q["y"]].tolist(),
+                    "backgroundColor": color_palette[0]
+                })
+            else:
+                plot_cols = [c for c in df_chart.columns[1:] if "(%)" not in c]
+                for c_idx, col in enumerate(plot_cols):
+                    chart_datasets.append({
+                        "label": col,
+                        "data": df_chart[col].tolist(),
+                        "backgroundColor": color_palette[c_idx % len(color_palette)]
+                    })
+
+            # Buat Tabel HTML dengan Bootstrap (Menggunakan df utuh yang menyertakan baris ALL)
+            table_html = df.to_html(classes="table table-striped table-hover table-sm text-center mb-0", index=False)
+            
+            html_sections.append({
+                "id": f"chart_{idx}",
+                "sheet": q["sheet"],
+                "title": q["title"],
+                "narasi": q["narasi"],
+                "labels": json.dumps(chart_labels),
+                "datasets": json.dumps(chart_datasets),
+                "table_html": table_html
+            })
+
+# Generate PDF
+pdf_doc.build(pdf_story)
+conn.close()
+
+# ==========================================
+# 4. MEMBANGUN TEMPLATE HTML DASHBOARD
+# ==========================================
+html_cards = ""
+for sec in html_sections:
+    html_cards += f"""
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-white border-bottom fw-bold text-primary">
+            {sec['sheet']}: {sec['title']}
+        </div>
+        <div class="card-body">
+            <p class="text-muted small">{sec['narasi']}</p>
+            <div class="row align-items-center">
+                <div class="col-lg-7 col-12 mb-3 mb-lg-0">
+                    <div style="position: relative; height:320px;">
+                        <canvas id="{sec['id']}"></canvas>
+                    </div>
+                </div>
+                <div class="col-lg-5 col-12">
+                    <div class="table-responsive small">
+                        {sec['table_html']}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    """
+
+js_chart_scripts = ""
+for sec in html_sections:
+    js_chart_scripts += f"""
+    new Chart(document.getElementById('{sec['id']}'), {{
+        type: 'bar',
+        data: {{
+            labels: {sec['labels']},
+            datasets: {sec['datasets']}
+        }},
+        options: {{
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {{
+                legend: {{ position: 'top' }}
+            }},
+            scales: {{
+                y: {{ beginAtZero: true }}
+            }}
+        }}
+    }});
+    """
+
+full_html_content = f"""<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Laporan Evaluasi</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {{ background-color: #f8f9fa; font-family: sans-serif; }}
+        .metric-card {{ background: white; border-radius: 8px; padding: 15px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }}
+    </style>
+</head>
+<body>
+    <div class="container my-4">
+        <div class="text-center mb-4">
+            <h2 class="fw-bold">LAPORAN EVALUASI AKTIVITAS & PARTISIPASI</h2>
+            <p class="text-secondary">Periode Data: <b>{START_DATE}</b> s/d <b>{END_DATE}</b></p>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-md-6 mb-2">
+                <div class="metric-card">
+                    <span class="text-muted small">Total User Terdaftar</span>
+                    <h3 class="fw-bold text-primary mb-0">{TOTAL_USER_REGISTERED}</h3>
+                </div>
+            </div>
+            <div class="col-md-6 mb-2">
+                <div class="metric-card">
+                    <span class="text-muted small">Total Kelas Terdaftar</span>
+                    <h3 class="fw-bold text-success mb-0">{TOTAL_KELAS_REGISTERED}</h3>
+                </div>
+            </div>
+        </div>
+
+        {html_cards}
+    </div>
+
+    <script>
+        {js_chart_scripts}
+    </script>
+</body>
+</html>
+"""
+
+with open(html_output, "w", encoding="utf-8") as f:
+    f.write(full_html_content)
+
+print(f"Ekspor Berhasil!\n1. File Excel: {excel_output}\n2. File PDF: {pdf_output}\n3. File HTML: {html_output}")
