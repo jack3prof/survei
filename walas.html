@@ -3,9 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Survei Kebutuhan Walas</title>
 
   <style>
+
     :root {
       --primary: #2563eb;
       --primary-hover: #1d4ed8;
@@ -15,14 +17,17 @@
       --border: #e2e8f0;
       --danger: #ef4444;
       --success: #22c55e;
-      --warning: #f59e0b;
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-family:
+        'Segoe UI',
+        system-ui,
+        -apple-system,
+        sans-serif;
     }
 
     body {
@@ -42,9 +47,11 @@
       border-radius: 12px;
       padding: 24px;
       margin-bottom: 24px;
+
       box-shadow:
         0 4px 6px -1px rgba(0,0,0,0.05),
         0 2px 4px -1px rgba(0,0,0,0.03);
+
       border: 1px solid var(--border);
     }
 
@@ -59,7 +66,10 @@
       font-size: 1.3rem;
       margin-bottom: 16px;
       color: #1e293b;
-      border-bottom: 2px solid var(--border);
+
+      border-bottom:
+        2px solid var(--border);
+
       padding-bottom: 8px;
     }
 
@@ -82,242 +92,422 @@
 
     input[type="text"],
     textarea {
+
       width: 100%;
+
       padding: 10px 14px;
-      border: 1px solid var(--border);
+
+      border:
+        1px solid var(--border);
+
       border-radius: 8px;
+
       font-size: 1rem;
-      transition: border-color 0.2s;
+
+      transition:
+        border-color 0.2s;
     }
 
     input[type="text"]:focus,
     textarea:focus {
+
       outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+
+      border-color:
+        var(--primary);
+
+      box-shadow:
+        0 0 0 3px
+        rgba(37,99,235,0.15);
     }
 
     .kode-input {
+
       letter-spacing: 1px;
+
       font-weight: bold;
     }
 
     .likert-group {
+
       display: flex;
-      justify-content: space-between;
+
+      justify-content:
+        space-between;
+
       align-items: center;
+
       gap: 8px;
+
       margin-top: 10px;
-      background: #f1f5f9;
+
+      background:
+        #f1f5f9;
+
       padding: 12px;
+
       border-radius: 8px;
     }
 
     .likert-option {
+
       flex: 1;
+
       text-align: center;
     }
 
-    .likert-option input[type="radio"] {
+    .likert-option
+    input[type="radio"] {
+
       display: none;
     }
 
     .likert-option label {
+
       display: block;
+
       padding: 8px 4px;
+
       background: #ffffff;
-      border: 1px solid var(--border);
+
+      border:
+        1px solid var(--border);
+
       border-radius: 6px;
+
       cursor: pointer;
+
       font-weight: 600;
+
       font-size: 0.9rem;
-      transition: all 0.2s;
+
+      transition:
+        all 0.2s;
+
       margin-bottom: 0;
     }
 
-    .likert-option input[type="radio"]:checked + label {
-      background: var(--primary);
+    .likert-option
+    input[type="radio"]:checked
+    + label {
+
+      background:
+        var(--primary);
+
       color: white;
-      border-color: var(--primary);
+
+      border-color:
+        var(--primary);
     }
 
     .likert-labels {
+
       display: flex;
-      justify-content: space-between;
+
+      justify-content:
+        space-between;
+
       font-size: 0.8rem;
+
       color: #64748b;
+
       margin-top: 4px;
+
       padding: 0 4px;
     }
 
     button.btn-submit {
+
       width: 100%;
-      background: var(--primary);
+
+      background:
+        var(--primary);
+
       color: white;
+
       border: none;
+
       padding: 14px;
+
       border-radius: 8px;
+
       font-size: 1rem;
+
       font-weight: 600;
+
       cursor: pointer;
-      transition: background 0.2s;
+
+      transition:
+        background 0.2s;
     }
 
     button.btn-submit:hover {
-      background: var(--primary-hover);
+
+      background:
+        var(--primary-hover);
     }
 
     button:disabled {
-      background: #94a3b8;
-      cursor: not-allowed;
+
+      background:
+        #94a3b8;
+
+      cursor:
+        not-allowed;
     }
 
     .prefix-grid {
+
       display: flex;
+
       flex-wrap: wrap;
+
       gap: 12px;
+
       margin-top: 12px;
     }
 
     .prefix-chip {
-      background: #eff6ff;
-      border: 1px solid #bfdbfe;
-      color: #1e40af;
-      padding: 8px 16px;
+
+      background:
+        #eff6ff;
+
+      border:
+        1px solid #bfdbfe;
+
+      color:
+        #1e40af;
+
+      padding:
+        8px 16px;
+
       border-radius: 8px;
+
       font-weight: 600;
+
       font-size: 0.95rem;
     }
 
     .table-container {
+
       max-height: 220px;
+
       overflow-y: auto;
-      border: 1px solid var(--border);
+
+      border:
+        1px solid var(--border);
+
       border-radius: 8px;
+
       margin-top: 12px;
     }
 
     table {
+
       width: 100%;
-      border-collapse: collapse;
+
+      border-collapse:
+        collapse;
+
       font-size: 0.9rem;
     }
 
     th,
     td {
-      padding: 10px 14px;
+
+      padding:
+        10px 14px;
+
       text-align: left;
-      border-bottom: 1px solid var(--border);
+
+      border-bottom:
+        1px solid var(--border);
+
       vertical-align: top;
     }
 
     th {
-      background: #f1f5f9;
+
+      background:
+        #f1f5f9;
+
       position: sticky;
+
       top: 0;
+
       z-index: 10;
+
       font-weight: 600;
     }
 
     tr:last-child td {
-      border-bottom: none;
+
+      border-bottom:
+        none;
     }
 
     .avg-grid {
+
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+
+      grid-template-columns:
+        repeat(
+          auto-fit,
+          minmax(260px, 1fr)
+        );
+
       gap: 12px;
+
       margin-top: 12px;
     }
 
     .avg-card {
-      background: #f8fafc;
-      border: 1px solid var(--border);
+
+      background:
+        #f8fafc;
+
+      border:
+        1px solid var(--border);
+
       border-radius: 8px;
-      padding: 12px 16px;
+
+      padding:
+        12px 16px;
+
       display: flex;
-      justify-content: space-between;
+
+      justify-content:
+        space-between;
+
       align-items: center;
-      gap: 10px;
     }
 
     .avg-val {
+
       font-size: 1.2rem;
+
       font-weight: bold;
-      color: var(--primary);
-      background: #dbeafe;
-      padding: 4px 10px;
+
+      color:
+        var(--primary);
+
+      background:
+        #dbeafe;
+
+      padding:
+        4px 10px;
+
       border-radius: 6px;
-      white-space: nowrap;
     }
 
     .alert {
-      padding: 12px 16px;
+
+      padding:
+        12px 16px;
+
       border-radius: 8px;
+
       margin-bottom: 16px;
+
       font-size: 0.9rem;
+
       display: none;
     }
 
     .alert-danger {
-      background: #fef2f2;
-      color: #991b1b;
-      border: 1px solid #fecaca;
+
+      background:
+        #fef2f2;
+
+      color:
+        #991b1b;
+
+      border:
+        1px solid #fecaca;
     }
 
     .alert-success {
-      background: #f0fdf4;
-      color: #166534;
-      border: 1px solid #bbf7d0;
+
+      background:
+        #f0fdf4;
+
+      color:
+        #166534;
+
+      border:
+        1px solid #bbf7d0;
     }
 
-    .alert-warning {
-      background: #fffbeb;
-      color: #92400e;
-      border: 1px solid #fde68a;
+    /* SEARCH */
+
+    .search-box {
+
+      margin-top: 10px;
+
+      margin-bottom: 8px;
     }
 
-    .dashboard-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 16px;
+    .search-box input {
+
+      width: 100%;
+
+      padding:
+        11px 14px;
+
+      border:
+        1px solid var(--border);
+
+      border-radius: 8px;
+
+      font-size: 0.95rem;
+
+      transition:
+        all 0.2s;
     }
 
-    .refresh-btn {
-      padding: 7px 12px;
-      background: #e2e8f0;
-      color: #334155;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 600;
+    .search-box input:focus {
+
+      outline: none;
+
+      border-color:
+        var(--primary);
+
+      box-shadow:
+        0 0 0 3px
+        rgba(37,99,235,0.15);
     }
 
-    .refresh-btn:hover {
-      background: #cbd5e1;
+    .search-info {
+
+      color:
+        #64748b;
+
+      font-size:
+        0.82rem;
+
+      margin-bottom:
+        8px;
     }
 
-    .status {
-      font-size: 0.8rem;
-      color: #64748b;
-      margin-top: 6px;
+    .search-info strong {
+
+      color:
+        var(--primary);
     }
 
-    .loading {
-      color: #64748b;
+    .empty-result {
+
       text-align: center;
-      padding: 12px;
-    }
 
-    .empty {
-      color: #94a3b8;
-      text-align: center;
-      padding: 12px;
+      color:
+        #94a3b8;
+
+      padding:
+        20px;
     }
 
     @media (max-width: 600px) {
+
       body {
         padding: 10px;
       }
@@ -326,35 +516,23 @@
         padding: 16px;
       }
 
-      h1 {
-        font-size: 1.45rem;
-      }
-
       .likert-group {
         gap: 4px;
         padding: 8px;
       }
 
       .likert-option label {
-        padding: 7px 2px;
-        font-size: 0.8rem;
-      }
-
-      .dashboard-header {
-        align-items: flex-start;
-        flex-direction: column;
-      }
-
-      .refresh-btn {
-        width: 100%;
+        padding:
+          8px 2px;
       }
 
       th,
       td {
-        padding: 8px;
-        font-size: 0.8rem;
+        padding:
+          8px 8px;
       }
     }
+
   </style>
 </head>
 
@@ -362,37 +540,54 @@
 
 <div class="container">
 
-  <!-- ============================= -->
-  <!-- FORM SURVEI -->
-  <!-- ============================= -->
+  <!-- =====================================================
+       FORM SURVEI
+  ====================================================== -->
 
   <div class="card">
 
     <h1>
+
       Survei Kebutuhan Walas
+
       <br>
 
       <a
         href="https://jack3prof.github.io/survei/lapseblak.html"
         target="_blank"
-        style="color:#1A73E8;text-decoration:underline;font-weight:bold;"
+        style="
+          color:#1A73E8;
+          text-decoration:underline;
+          font-weight:bold;
+        "
       >
         laporan seblak
       </a>
 
       <br>
 
-      <span style="font-size:12px;color:#0000EE;">
-        Bila tidak bisa langsung klik, tekan 3 detik,
-        pilih Copy URL, lalu paste di Chrome.
+      <span
+        style="
+          font-size:12px;
+          color:#0000EE;
+        "
+      >
+        Bila tidak bisa langsung klik,
+        tekan 3 detik, pilih Copy URL,
+        lalu paste di chrome.
       </span>
+
     </h1>
 
-    <div id="alertBox" class="alert"></div>
+    <div
+      id="alertBox"
+      class="alert"
+    ></div>
 
     <form id="surveyForm">
 
       <!-- KODE -->
+
       <div class="form-group">
 
         <label for="kodePengisi">
@@ -404,61 +599,95 @@
           id="kodePengisi"
           class="kode-input"
           placeholder="AB CD123 EFG45"
-          autocomplete="off"
           required
         >
 
         <div class="hint">
+
           Format wajib:
-          2 huruf + spasi + 2 huruf 3 angka +
-          spasi + 3 huruf 2 angka.
+          2 huruf + spasi +
+          2 huruf 3 angka + spasi +
+          3 huruf 2 angka
+
           <br>
+
           Contoh:
-          <strong>AB CD123 EFG45</strong>
+          AB CD123 EFG45
+
         </div>
 
       </div>
 
 
-      <!-- ============================= -->
-      <!-- A. EVALUASI -->
-      <!-- ============================= -->
+      <!-- =================================================
+           A. EVALUASI
+      ================================================== -->
 
       <h2 style="margin-top:30px;">
-        A. Evaluasi & Sikap (Skala 1 - 5)
+        A. Evaluasi & Sikap
+        (Skala 1 - 5)
       </h2>
 
 
       <!-- Q1 -->
+
       <div class="form-group">
+
         <label>
-          1. Bagaimana keaktifan rutin anggota dalam kelompok usrah Anda?
+          1. Bagaimana keaktifan rutin anggota
+          dalam kelompok usrah Anda?
         </label>
 
         <div class="likert-group">
 
           <div class="likert-option">
-            <input type="radio" name="q1" id="q1_1" value="1" required>
+            <input
+              type="radio"
+              name="q1"
+              id="q1_1"
+              value="1"
+              required
+            >
             <label for="q1_1">1</label>
           </div>
 
           <div class="likert-option">
-            <input type="radio" name="q1" id="q1_2" value="2">
+            <input
+              type="radio"
+              name="q1"
+              id="q1_2"
+              value="2"
+            >
             <label for="q1_2">2</label>
           </div>
 
           <div class="likert-option">
-            <input type="radio" name="q1" id="q1_3" value="3">
+            <input
+              type="radio"
+              name="q1"
+              id="q1_3"
+              value="3"
+            >
             <label for="q1_3">3</label>
           </div>
 
           <div class="likert-option">
-            <input type="radio" name="q1" id="q1_4" value="4">
+            <input
+              type="radio"
+              name="q1"
+              id="q1_4"
+              value="4"
+            >
             <label for="q1_4">4</label>
           </div>
 
           <div class="likert-option">
-            <input type="radio" name="q1" id="q1_5" value="5">
+            <input
+              type="radio"
+              name="q1"
+              id="q1_5"
+              value="5"
+            >
             <label for="q1_5">5</label>
           </div>
 
@@ -468,39 +697,69 @@
           <span>1 = Tidak Aktif</span>
           <span>5 = Sangat Aktif</span>
         </div>
+
       </div>
 
 
       <!-- Q2 -->
+
       <div class="form-group">
+
         <label>
-          2. Seberapa kuat ikatan ukhuwah di antara anggota usrah saat ini?
+          2. Seberapa kuat ikatan ukhuwah
+          di antara anggota usrah saat ini?
         </label>
 
         <div class="likert-group">
 
           <div class="likert-option">
-            <input type="radio" name="q2" id="q2_1" value="1" required>
+            <input
+              type="radio"
+              name="q2"
+              id="q2_1"
+              value="1"
+              required
+            >
             <label for="q2_1">1</label>
           </div>
 
           <div class="likert-option">
-            <input type="radio" name="q2" id="q2_2" value="2">
+            <input
+              type="radio"
+              name="q2"
+              id="q2_2"
+              value="2"
+            >
             <label for="q2_2">2</label>
           </div>
 
           <div class="likert-option">
-            <input type="radio" name="q2" id="q2_3" value="3">
+            <input
+              type="radio"
+              name="q2"
+              id="q2_3"
+              value="3"
+            >
             <label for="q2_3">3</label>
           </div>
 
           <div class="likert-option">
-            <input type="radio" name="q2" id="q2_4" value="4">
+            <input
+              type="radio"
+              name="q2"
+              id="q2_4"
+              value="4"
+            >
             <label for="q2_4">4</label>
           </div>
 
           <div class="likert-option">
-            <input type="radio" name="q2" id="q2_5" value="5">
+            <input
+              type="radio"
+              name="q2"
+              id="q2_5"
+              value="5"
+            >
             <label for="q2_5">5</label>
           </div>
 
@@ -510,13 +769,17 @@
           <span>1 = Tidak Kuat</span>
           <span>5 = Sangat Kuat</span>
         </div>
+
       </div>
 
 
       <!-- Q3 -->
+
       <div class="form-group">
+
         <label>
-          3. Seberapa sering Anda melakukan pendekatan personal di luar jadwal rutin?
+          3. Seberapa sering Anda melakukan
+          pendekatan personal di luar jadwal rutin?
         </label>
 
         <div class="likert-group">
@@ -552,13 +815,17 @@
           <span>1 = Tidak Pernah</span>
           <span>5 = Sangat Sering</span>
         </div>
+
       </div>
 
 
       <!-- Q4 -->
+
       <div class="form-group">
+
         <label>
-          4. Apakah materi usrah yang diberikan sudah sesuai dengan kebutuhan mereka?
+          4. Apakah materi usrah yang diberikan
+          sudah sesuai dengan kebutuhan mereka?
         </label>
 
         <div class="likert-group">
@@ -594,13 +861,17 @@
           <span>1 = Tidak Sesuai</span>
           <span>5 = Sangat Sesuai</span>
         </div>
+
       </div>
 
 
       <!-- Q5 -->
+
       <div class="form-group">
+
         <label>
-          5. Apakah Anda merasa cukup siap dengan panduan materi yang pernah diberikan?
+          5. Apakah Anda merasa cukup siap
+          dengan panduan materi yang pernah diberikan?
         </label>
 
         <div class="likert-group">
@@ -636,13 +907,18 @@
           <span>1 = Tidak Siap</span>
           <span>5 = Sangat Siap</span>
         </div>
+
       </div>
 
 
       <!-- Q6 -->
+
       <div class="form-group">
+
         <label>
-          6. Apakah metode evaluasi saat ini efektif mengukur perkembangan tarbiyah anggota anda?
+          6. Apakah metode evaluasi saat ini
+          efektif mengukur perkembangan tarbiyah
+          anggota anda?
         </label>
 
         <div class="likert-group">
@@ -678,11 +954,14 @@
           <span>1 = Tidak Efektif</span>
           <span>5 = Sangat Efektif</span>
         </div>
+
       </div>
 
 
       <!-- Q7 -->
+
       <div class="form-group">
+
         <label>
           7. Apakah semua anggota sudah membina?
         </label>
@@ -720,13 +999,17 @@
           <span>1 = Tidak Satupun</span>
           <span>5 = Semua</span>
         </div>
+
       </div>
 
 
       <!-- Q8 -->
+
       <div class="form-group">
+
         <label>
-          8. Apakah anda memerlukan penguatan untuk memotivasi anggota yang belum membina tsb?
+          8. Apakah anda memerlukan penguatan
+          untuk memotivasi anggota yang belum membina tsb?
         </label>
 
         <div class="likert-group">
@@ -762,13 +1045,17 @@
           <span>1 = Tidak Butuh</span>
           <span>5 = Sangat Butuh</span>
         </div>
+
       </div>
 
 
       <!-- Q9 -->
+
       <div class="form-group">
+
         <label>
-          9. Apakah Anda butuh pelatihan khusus untuk teknik komunikasi rekrutmen?
+          9. Apakah Anda butuh pelatihan khusus
+          untuk teknik komunikasi rekrutmen?
         </label>
 
         <div class="likert-group">
@@ -804,13 +1091,17 @@
           <span>1 = Tidak Butuh</span>
           <span>5 = Sangat Butuh</span>
         </div>
+
       </div>
 
 
       <!-- Q10 -->
+
       <div class="form-group">
+
         <label>
-          10. Apakah kesehatan kelas makin hari makin membaik?
+          10. Apakah kesehatan kelas makin hari
+          makin membaik?
         </label>
 
         <div class="likert-group">
@@ -846,13 +1137,17 @@
           <span>1 = Memburuk</span>
           <span>5 = Sangat Membaik</span>
         </div>
+
       </div>
 
 
       <!-- Q11 -->
+
       <div class="form-group">
+
         <label>
-          11. Apakah siswa telah naik kelas sesuai waktu yang ditetapkan?
+          11. Apakah siswa telah naik kelas
+          sesuai waktu yang ditetapkan?
         </label>
 
         <div class="likert-group">
@@ -888,12 +1183,13 @@
           <span>1 = Banyak Kendala</span>
           <span>5 = Semua Sesuai Target</span>
         </div>
+
       </div>
 
 
-      <!-- ============================= -->
-      <!-- B. PERTANYAAN TERBUKA -->
-      <!-- ============================= -->
+      <!-- =================================================
+           B. PERTANYAAN TERBUKA
+      ================================================== -->
 
       <h2 style="margin-top:30px;">
         B. Pertanyaan Terbuka
@@ -901,82 +1197,162 @@
 
 
       <div class="form-group">
+
         <label for="ft1">
           1. Apa kendala terbesar yang sering membuat anggota absen?
         </label>
-        <textarea id="ft1" rows="3" placeholder="Tuliskan jawaban Anda..."></textarea>
+
+        <textarea
+          id="ft1"
+          rows="3"
+          placeholder="Tuliskan jawaban Anda..."
+        ></textarea>
+
       </div>
 
 
       <div class="form-group">
+
         <label for="ft2">
-          2. Adakah kendala tempat pertemuan? Dimana tempat offline yang paling sering (rumah, kantor, dll)?
+          2. Adakah kendala tempat pertemuan?
+          Dimana tempat offline yang paling sering
+          (rumah, kantor, dll)?
         </label>
-        <textarea id="ft2" rows="3" placeholder="Tuliskan jawaban Anda..."></textarea>
+
+        <textarea
+          id="ft2"
+          rows="3"
+          placeholder="Tuliskan jawaban Anda..."
+        ></textarea>
+
       </div>
 
 
       <div class="form-group">
+
         <label for="ft3">
-          3. Apa yg anda butuhkan untuk penguatan pengelolaan usrah?
+          3. Apa yg anda butuhkan
+          untuk penguatan pengelolaan usrah?
         </label>
-        <textarea id="ft3" rows="3" placeholder="Tuliskan jawaban Anda..."></textarea>
+
+        <textarea
+          id="ft3"
+          rows="3"
+          placeholder="Tuliskan jawaban Anda..."
+        ></textarea>
+
       </div>
 
 
       <div class="form-group">
+
         <label for="ft4">
-          4. Apa bentuk dukungan yang paling Anda butuhkan dari lembaga atau pengurus?
+          4. Apa bentuk dukungan yang paling Anda
+          butuhkan dari lembaga atau pengurus?
         </label>
-        <textarea id="ft4" rows="3" placeholder="Tuliskan jawaban Anda..."></textarea>
+
+        <textarea
+          id="ft4"
+          rows="3"
+          placeholder="Tuliskan jawaban Anda..."
+        ></textarea>
+
       </div>
 
 
       <div class="form-group">
+
         <label for="ft5">
-          5. Pada proses rekrutmen, apa alasan utama yang sering membuat orang ragu atau menolak ikut pembinaan?
+          5. Pada proses rekrutmen, apa alasan utama
+          yang sering membuat orang ragu atau menolak
+          ikut pembinaan?
         </label>
-        <textarea id="ft5" rows="3" placeholder="Tuliskan jawaban Anda..."></textarea>
+
+        <textarea
+          id="ft5"
+          rows="3"
+          placeholder="Tuliskan jawaban Anda..."
+        ></textarea>
+
       </div>
 
 
       <div class="form-group">
+
         <label for="ft6">
           6. Apa alasan anggota yang belum membina?
         </label>
-        <textarea id="ft6" rows="3" placeholder="Tuliskan jawaban Anda..."></textarea>
+
+        <textarea
+          id="ft6"
+          rows="3"
+          placeholder="Tuliskan jawaban Anda..."
+        ></textarea>
+
       </div>
 
 
       <div class="form-group">
+
         <label for="ft7">
-          7. Bagaimana anda menghadapi anggota yang belum membina?
+          7. Bagaimana anda menghadapi
+          anggota yang belum membina?
         </label>
-        <textarea id="ft7" rows="3" placeholder="Tuliskan jawaban Anda..."></textarea>
+
+        <textarea
+          id="ft7"
+          rows="3"
+          placeholder="Tuliskan jawaban Anda..."
+        ></textarea>
+
       </div>
 
 
       <div class="form-group">
+
         <label for="ft8">
-          8. Adakah proyek amal yang dijadikan garapan oleh kelas anda? (Sebutkan yang terakhir ditangani dan kapan)
+          8. Adakah proyek amal yang dijadikan
+          garapan oleh kelas anda?
+          (Sebutkan yang terakhir ditangani dan kapan)
         </label>
-        <textarea id="ft8" rows="3" placeholder="Tuliskan jawaban Anda..."></textarea>
+
+        <textarea
+          id="ft8"
+          rows="3"
+          placeholder="Tuliskan jawaban Anda..."
+        ></textarea>
+
       </div>
 
 
       <div class="form-group">
+
         <label for="ft9">
-          9. Tentang materi pembekalan naqib, pembahasan apa yg anda butuhkan?
+          9. Tentang materi pembekalan naqib,
+          pembahasan apa yg anda butuhkan?
         </label>
-        <textarea id="ft9" rows="3" placeholder="Tuliskan jawaban Anda..."></textarea>
+
+        <textarea
+          id="ft9"
+          rows="3"
+          placeholder="Tuliskan jawaban Anda..."
+        ></textarea>
+
       </div>
 
 
       <div class="form-group">
+
         <label for="ft10">
           10. Saran, masukan, usul, dll.
         </label>
-        <textarea id="ft10" rows="3" placeholder="Tuliskan jawaban Anda..."></textarea>
+
+        <textarea
+          id="ft10"
+          rows="3"
+          placeholder="Tuliskan jawaban Anda..."
+        ></textarea>
+
       </div>
 
 
@@ -993,13 +1369,22 @@
   </div>
 
 
-  <!-- ============================= -->
-  <!-- DASHBOARD -->
-  <!-- ============================= -->
+  <!-- =====================================================
+       DASHBOARD
+  ====================================================== -->
 
   <div class="card">
 
-    <div class="dashboard-header">
+    <div
+      style="
+        display:flex;
+		flex-direction: column-reverse;
+        justify-content:space-between;
+        align-items:center;
+        margin-bottom:16px;
+        gap:10px;
+      "
+    >
 
       <h2 style="margin-bottom:0;">
         Dashboard & Data Pengisian
@@ -1007,34 +1392,43 @@
 
       <button
         id="btnRefresh"
-        class="refresh-btn"
-        type="button"
+        style="
+          padding:6px 12px;
+          background:#e2e8f0;
+          border:none;
+          border-radius:6px;
+          cursor:pointer;
+        "
       >
         Refresh Data
       </button>
 
     </div>
 
-    <div id="dashboardStatus" class="status">
-      Mengambil data langsung dari Google Sheet...
-    </div>
-
 
     <!-- SEKTOR -->
 
-    <div class="form-group" style="margin-top:20px;">
+    <div class="form-group">
 
       <label>
-        Rincian Jumlah Pengisi (Per Sektor):
+        Rincian Jumlah Pengisi
+        (Per Sektor) :
       </label>
 
       <div
         id="prefixContainer"
         class="prefix-grid"
       >
-        <div class="loading">
-          Memuat data...
+
+        <div
+          style="
+            color:#94a3b8;
+            font-size:0.9rem;
+          "
+        >
+          Belum ada data...
         </div>
+
       </div>
 
     </div>
@@ -1042,10 +1436,14 @@
 
     <!-- DAFTAR PENGISI -->
 
-    <div class="form-group" style="margin-top:24px;">
+    <div
+      class="form-group"
+      style="margin-top:24px;"
+    >
 
       <label>
-        Daftar Pengisi (Terbaru di atas):
+        Daftar Pengisi
+        (Terbaru di atas) :
       </label>
 
       <div class="table-container">
@@ -1053,7 +1451,9 @@
         <table>
 
           <thead>
+
             <tr>
+
               <th style="width:70px;">
                 No
               </th>
@@ -1065,15 +1465,25 @@
               <th>
                 Kode Pengisi
               </th>
+
             </tr>
+
           </thead>
 
           <tbody id="pengisiTableBody">
 
             <tr>
-              <td colspan="3" class="loading">
+
+              <td
+                colspan="3"
+                style="
+                  text-align:center;
+                  color:#94a3b8;
+                "
+              >
                 Memuat data...
               </td>
+
             </tr>
 
           </tbody>
@@ -1087,10 +1497,14 @@
 
     <!-- RATA-RATA -->
 
-    <div class="form-group" style="margin-top:24px;">
+    <div
+      class="form-group"
+      style="margin-top:24px;"
+    >
 
       <label>
-        Hasil Rata-Rata Jawaban Tertutup (Skala 1 - 5):
+        Hasil Rata-Rata Jawaban Tertutup
+        (Skala 1 - 5) :
       </label>
 
       <div
@@ -1103,11 +1517,39 @@
 
     <!-- JAWABAN TERBUKA -->
 
-    <div class="form-group" style="margin-top:24px;">
+    <div
+      class="form-group"
+      style="margin-top:24px;"
+    >
 
       <label>
-        Hasil Jawaban Terbuka:
+        Hasil Jawaban Terbuka :
       </label>
+
+
+      <!-- SATU SEARCH BAR -->
+
+      <div class="search-box">
+
+<textarea
+  id="searchFreeText"
+  placeholder="Kolom Pencarian. 
+Topik yang tersedia: Kendala Utama Absen, Kendala Tempat Offline, Pengelolaan Usrah, 
+Dukungan Lembaga, Alasan Ragu/Menolak, Alasan Belum Membina, Cara Menghadapi
+Proyek Amal, Materi Pembekalan Naqib, Saran / Masukan"
+  autocomplete="off"
+></textarea>
+
+      </div>
+
+
+      <div
+        id="searchInfo"
+        class="search-info"
+      >
+        Menampilkan semua jawaban
+      </div>
+
 
       <div
         class="table-container"
@@ -1143,9 +1585,17 @@
           <tbody id="freeTextTableBody">
 
             <tr>
-              <td colspan="4" class="loading">
+
+              <td
+                colspan="4"
+                style="
+                  text-align:center;
+                  color:#94a3b8;
+                "
+              >
                 Memuat data...
               </td>
+
             </tr>
 
           </tbody>
@@ -1165,142 +1615,144 @@
 
 /* =========================================================
    KONFIGURASI
-   ========================================================= */
+========================================================= */
+
 
 /*
- * 1. MASUKKAN ID GOOGLE SPREADSHEET ANDA
+ * SHEET ID GOOGLE SHEET
  *
  * Contoh URL:
  *
  * https://docs.google.com/spreadsheets/d/
- * 1AbCdEfGhIjKlMnOpQrStUvWxYz1234567890
- * /edit
+ * 1AbCdEfGhIjKlMnOpQrStUvWxYz/edit
  *
  * Maka SHEET_ID adalah:
  *
- * 1AbCdEfGhIjKlMnOpQrStUvWxYz1234567890
+ * 1AbCdEfGhIjKlMnOpQrStUvWxYz
  */
 
-const SHEET_ID = "1tNH926eIQODqEtIeBhREGSv35qbVGJtaLnFkepuyZkY";
+const SHEET_ID =
+  "1tNH926eIQODqEtIeBhREGSv35qbVGJtaLnFkepuyZkY";
 
 
 /*
- * 2. NAMA TAB/SHEET
+ * Nama tab Google Sheet.
  *
- * Misalnya tab Google Sheet bernama:
+ * Contoh:
+ *
  * Sheet1
  *
  * atau:
- * Data
  *
- * Harus sama persis.
+ * Responden
  */
 
-const SHEET_NAME = "Sheet1";
+const SHEET_NAME =
+  "Sheet1";
 
 
 /*
- * 3. SHEETDB UNTUK MENULIS DATA
+ * SheetDB
  *
- * Data TIDAK ditulis menggunakan Google Sheets API.
- *
- * Tetap menggunakan SheetDB seperti sebelumnya.
+ * Penulisan data TETAP menggunakan SheetDB.
  */
 
-const SHEETDB_API_URL =
+const API_URL =
   "https://sheetdb.io/api/v1/f3x49hm29wxsc";
 
 
-/* =========================================================
-   URL GOOGLE SHEET UNTUK MEMBACA DATA
-   ========================================================= */
-
-function getGoogleSheetReadURL() {
-
-  const sheetName =
-    encodeURIComponent(SHEET_NAME);
-
-  return (
-    "https://docs.google.com/spreadsheets/d/" +
-    SHEET_ID +
-    "/gviz/tq?tqx=out:json&sheet=" +
-    sheetName
-  );
-
-}
-
-
-/* =========================================================
-   REGEX KODE PENGISI
-   ========================================================= */
+/*
+ * Format kode:
+ *
+ * AB CD123 EFG45
+ */
 
 const KODE_REGEX =
   /^\s*[A-Z]{2}\s+[A-Z]{2}[0-9]{3}\s+[A-Z]{3}[0-9]{2}\s*$/;
 
 
-/* =========================================================
-   VARIABEL
-   ========================================================= */
-
 let allData = [];
+
+let allFreeTextEntries = [];
 
 
 /* =========================================================
    ELEMENT
-   ========================================================= */
+========================================================= */
 
 const kodeInput =
-  document.getElementById("kodePengisi");
+  document.getElementById(
+    'kodePengisi'
+  );
 
 const surveyForm =
-  document.getElementById("surveyForm");
+  document.getElementById(
+    'surveyForm'
+  );
 
 const btnSubmit =
-  document.getElementById("btnSubmit");
+  document.getElementById(
+    'btnSubmit'
+  );
 
 const alertBox =
-  document.getElementById("alertBox");
+  document.getElementById(
+    'alertBox'
+  );
 
 const btnRefresh =
-  document.getElementById("btnRefresh");
+  document.getElementById(
+    'btnRefresh'
+  );
 
-const dashboardStatus =
-  document.getElementById("dashboardStatus");
+const searchFreeText =
+  document.getElementById(
+    'searchFreeText'
+  );
+
+const searchInfo =
+  document.getElementById(
+    'searchInfo'
+  );
 
 
 /* =========================================================
-   UPPERCASE KODE
-   ========================================================= */
+   KODE INPUT
+========================================================= */
 
-kodeInput.addEventListener("input", function(e) {
+kodeInput.addEventListener(
+  'input',
+  function(e) {
 
-  e.target.value =
-    e.target.value.toUpperCase();
+    e.target.value =
+      e.target.value
+        .toUpperCase();
 
-});
+  }
+);
 
 
 /* =========================================================
    ALERT
-   ========================================================= */
+========================================================= */
 
 function showAlert(
-  message,
-  type = "danger"
+  msg,
+  type = 'danger'
 ) {
 
   alertBox.className =
-    "alert alert-" + type;
+    `alert alert-${type}`;
 
   alertBox.textContent =
-    message;
+    msg;
 
   alertBox.style.display =
-    "block";
+    'block';
 
   alertBox.scrollIntoView({
-    behavior: "smooth",
-    block: "center"
+    behavior: 'smooth',
+    block: 'center'
   });
 
 }
@@ -1309,192 +1761,275 @@ function showAlert(
 function hideAlert() {
 
   alertBox.style.display =
-    "none";
+    'none';
 
 }
 
 
 /* =========================================================
    ESCAPE HTML
-   Mencegah isi jawaban HTML dieksekusi
-   ========================================================= */
+========================================================= */
 
-function escapeHTML(value) {
+function escapeHtml(value) {
 
-  if (value === null ||
-      value === undefined) {
-
-    return "";
-
-  }
-
-  return String(value)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
+  return String(
+    value ?? ''
+  )
+    .replace(
+      /&/g,
+      '&amp;'
+    )
+    .replace(
+      /</g,
+      '&lt;'
+    )
+    .replace(
+      />/g,
+      '&gt;'
+    )
+    .replace(
+      /"/g,
+      '&quot;'
+    )
+    .replace(
+      /'/g,
+      '&#039;'
+    );
 
 }
 
 
 /* =========================================================
-   NORMALISASI NILAI GOOGLE SHEET
-   ========================================================= */
+   GOOGLE SHEET CSV URL
+========================================================= */
 
-function getCellValue(cell) {
+function getGoogleSheetCSVURL() {
 
-  if (!cell) {
-    return "";
-  }
-
-  if (
-    typeof cell === "object" &&
-    cell !== null &&
-    "v" in cell
-  ) {
-
-    return cell.v ?? "";
-
-  }
-
-  return cell;
-
-}
-
-
-/* =========================================================
-   PARSE RESPONSE GVIZ
-   ========================================================= */
-
-function parseGVizResponse(text) {
-
-  /*
-   * Google Visualization biasanya mengembalikan:
-   *
-   * google.visualization.Query.setResponse({...});
-   *
-   * Kita ambil bagian JSON di dalamnya.
-   */
-
-  const start =
-    text.indexOf("{");
-
-  const end =
-    text.lastIndexOf("}");
-
-  if (
-    start === -1 ||
-    end === -1
-  ) {
-
-    throw new Error(
-      "Format response Google Sheet tidak dikenali."
-    );
-
-  }
-
-  const jsonText =
-    text.substring(
-      start,
-      end + 1
-    );
-
-  const json =
-    JSON.parse(jsonText);
-
-  if (
-    !json.table ||
-    !json.table.cols
-  ) {
-
-    return [];
-
-  }
-
-  const headers =
-    json.table.cols.map(
-      (col, index) => {
-
-        let label =
-          col.label || "";
-
-        /*
-         * Jika header kosong,
-         * buat nama kolom otomatis.
-         */
-
-        if (!label) {
-          label = "column_" + index;
-        }
-
-        return label
-          .trim()
-          .toLowerCase();
-
-      }
-    );
-
-
-  const rows =
-    json.table.rows || [];
-
-
-  return rows.map(
-    row => {
-
-      const result = {};
-
-      headers.forEach(
-        (header, index) => {
-
-          const cell =
-            row.c
-              ? row.c[index]
-              : null;
-
-          result[header] =
-            getCellValue(cell);
-
-        }
-      );
-
-      return result;
-
-    }
+  return (
+    "https://docs.google.com/spreadsheets/d/" +
+    encodeURIComponent(SHEET_ID) +
+    "/gviz/tq" +
+    "?tqx=out:csv" +
+    "&sheet=" +
+    encodeURIComponent(SHEET_NAME) +
+    "&_=" +
+    Date.now()
   );
 
 }
 
 
 /* =========================================================
-   BACA DATA LANGSUNG GOOGLE SHEET
-   ========================================================= */
+   CSV PARSER
+========================================================= */
+
+function parseCSV(text) {
+
+  const rows = [];
+
+  let row = [];
+
+  let cell = '';
+
+  let insideQuotes = false;
+
+
+  for (
+    let i = 0;
+    i < text.length;
+    i++
+  ) {
+
+    const char =
+      text[i];
+
+    const next =
+      text[i + 1];
+
+
+    /*
+     * Double quote di dalam quoted cell
+     */
+
+    if (
+      char === '"' &&
+      insideQuotes &&
+      next === '"'
+    ) {
+
+      cell += '"';
+
+      i++;
+
+      continue;
+    }
+
+
+    /*
+     * Buka / tutup quote
+     */
+
+    if (char === '"') {
+
+      insideQuotes =
+        !insideQuotes;
+
+      continue;
+    }
+
+
+    /*
+     * Pemisah kolom
+     */
+
+    if (
+      char === ',' &&
+      !insideQuotes
+    ) {
+
+      row.push(cell);
+
+      cell = '';
+
+      continue;
+    }
+
+
+    /*
+     * Baris baru
+     */
+
+    if (
+      (
+        char === '\n' ||
+        char === '\r'
+      ) &&
+      !insideQuotes
+    ) {
+
+      if (
+        char === '\r' &&
+        next === '\n'
+      ) {
+
+        i++;
+      }
+
+      row.push(cell);
+
+      cell = '';
+
+
+      if (
+        row.length > 1 ||
+        row[0] !== ''
+      ) {
+
+        rows.push(row);
+      }
+
+      row = [];
+
+      continue;
+    }
+
+
+    cell += char;
+  }
+
+
+  /*
+   * Cell terakhir
+   */
+
+  if (
+    cell !== '' ||
+    row.length > 0
+  ) {
+
+    row.push(cell);
+
+    rows.push(row);
+  }
+
+
+  if (
+    rows.length === 0
+  ) {
+
+    return [];
+  }
+
+
+  /*
+   * Header
+   */
+
+  const headers =
+    rows[0].map(
+      header =>
+        String(header)
+          .trim()
+          .toLowerCase()
+    );
+
+
+  /*
+   * Data
+   */
+
+  return rows
+    .slice(1)
+    .map(row => {
+
+      const result = {};
+
+      headers.forEach(
+        (header, index) => {
+
+          result[header] =
+            row[index] !== undefined
+              ? row[index]
+              : '';
+
+        }
+      );
+
+      return result;
+
+    });
+
+}
+
+
+/* =========================================================
+   AMBIL DATA GOOGLE SHEET
+========================================================= */
 
 async function fetchDataFromGoogleSheet() {
 
   if (
     !SHEET_ID ||
-    SHEET_ID === "MASUKKAN_SHEET_ID_ANDA"
+    SHEET_ID ===
+      "MASUKKAN_SHEET_ID_DI_SINI"
   ) {
 
     throw new Error(
       "SHEET_ID belum dimasukkan."
     );
-
   }
 
 
   const url =
-    getGoogleSheetReadURL();
+    getGoogleSheetCSVURL();
 
 
   const response =
     await fetch(
-      url + "&_=" + Date.now(),
+      url,
       {
-        method: "GET",
-        cache: "no-store"
+        method: 'GET',
+        cache: 'no-store'
       }
     );
 
@@ -1502,29 +2037,51 @@ async function fetchDataFromGoogleSheet() {
   if (!response.ok) {
 
     throw new Error(
-      "Google Sheet tidak dapat dibaca."
+      "Google Sheet gagal dibaca. HTTP " +
+      response.status
     );
 
   }
 
 
-  const text =
+  const csvText =
     await response.text();
 
 
-  return parseGVizResponse(text);
+  /*
+   * Jika Google mengembalikan
+   * halaman error HTML
+   */
+
+  if (
+    csvText.includes(
+      '<html'
+    ) &&
+    !csvText.includes(
+      ','
+    )
+  ) {
+
+    throw new Error(
+      "Google Sheet tidak dapat dibaca. " +
+      "Periksa akses publik dan nama Sheet."
+    );
+
+  }
+
+
+  return parseCSV(
+    csvText
+  );
 
 }
 
 
 /* =========================================================
-   AMBIL DATA
-   ========================================================= */
+   FETCH DATA DASHBOARD
+========================================================= */
 
 async function fetchData() {
-
-  dashboardStatus.textContent =
-    "Mengambil data langsung dari Google Sheet...";
 
   try {
 
@@ -1536,49 +2093,115 @@ async function fetchData() {
         ? data
         : [];
 
-    updateDashboard(allData);
+    updateDashboard(
+      allData
+    );
 
-
-    dashboardStatus.textContent =
-      "Data berhasil diperbarui langsung dari Google Sheet.";
-
-
-  } catch (error) {
+  } catch (err) {
 
     console.error(
-      "Gagal membaca Google Sheet:",
-      error
+      'Gagal membaca Google Sheet:',
+      err
     );
+
 
     allData = [];
 
     updateDashboard([]);
 
-    dashboardStatus.textContent =
-      "Gagal membaca Google Sheet: " +
-      error.message;
+
+    showAlert(
+      'Gagal membaca Google Sheet: ' +
+      err.message
+    );
 
   }
 
 }
 
 
+
 /* =========================================================
-   SORT DATA
-   ========================================================= */
+   PARSE WAKTU FORMAT LAMA
+========================================================= */
 
-function sortData(data) {
+function parseIndonesianDate(value) {
 
-  return [...data].sort(
+  if (!value) {
+    return 0;
+  }
+
+  const text = String(value).trim();
+
+  /*
+   * Mendukung:
+   *
+   * 18/08/2026 14.59
+   * 18/08/2026 14:59
+   * 18/08/2026 14.59.30
+   * 18/08/2026 14:59:30
+   */
+
+  const match = text.match(
+    /^(\d{1,2})\/(\d{1,2})\/(\d{4})\s+(\d{1,2})[.:](\d{2})(?:[.:](\d{2}))?$/
+  );
+
+  if (!match) {
+    return 0;
+  }
+
+  const day =
+    parseInt(match[1], 10);
+
+  const month =
+    parseInt(match[2], 10) - 1;
+
+  const year =
+    parseInt(match[3], 10);
+
+  const hour =
+    parseInt(match[4], 10);
+
+  const minute =
+    parseInt(match[5], 10);
+
+  const second =
+    parseInt(match[6] || '0', 10);
+
+  return new Date(
+    year,
+    month,
+    day,
+    hour,
+    minute,
+    second
+  ).getTime();
+
+}
+
+/* =========================================================
+   DASHBOARD
+========================================================= */
+
+function updateDashboard(
+  data
+) {
+
+  /*
+   * Sort terbaru
+   */
+
+const sortedData =
+  [...data].sort(
     (a, b) => {
 
       const dateA =
-        parseDateValue(
+        parseIndonesianDate(
           a.waktu_pengisian
         );
 
       const dateB =
-        parseDateValue(
+        parseIndonesianDate(
           b.waktu_pengisian
         );
 
@@ -1587,87 +2210,10 @@ function sortData(data) {
     }
   );
 
-}
-
-
-/* =========================================================
-   PARSE TANGGAL
-   ========================================================= */
-
-function parseDateValue(value) {
-
-  if (!value) {
-    return 0;
-  }
-
-
-  const text =
-    String(value).trim();
-
-
-  /*
-   * Format:
-   * 18/08/2026 13:52
-   */
-
-  const match =
-    text.match(
-      /^(\d{1,2})\/(\d{1,2})\/(\d{4})\s+(\d{1,2}):(\d{2})/
-    );
-
-
-  if (match) {
-
-    const day =
-      Number(match[1]);
-
-    const month =
-      Number(match[2]) - 1;
-
-    const year =
-      Number(match[3]);
-
-    const hour =
-      Number(match[4]);
-
-    const minute =
-      Number(match[5]);
-
-
-    return new Date(
-      year,
-      month,
-      day,
-      hour,
-      minute
-    ).getTime();
-
-  }
-
-
-  const timestamp =
-    Date.parse(text);
-
-  return isNaN(timestamp)
-    ? 0
-    : timestamp;
-
-}
-
-
-/* =========================================================
-   UPDATE DASHBOARD
-   ========================================================= */
-
-function updateDashboard(data) {
-
-  const sortedData =
-    sortData(data);
-
 
   /* =======================================================
      JUMLAH PER SEKTOR
-     ======================================================= */
+  ======================================================= */
 
   const prefixCounts = {};
 
@@ -1675,29 +2221,33 @@ function updateDashboard(data) {
   sortedData.forEach(
     item => {
 
-      if (!item.kode_pengisi) {
-        return;
-      }
-
-
-      const kode =
-        String(
-          item.kode_pengisi
-        )
-        .trim()
-        .toUpperCase();
-
-
-      const prefix =
-        kode.substring(0, 2);
-
-
       if (
-        /^[A-Z]{2}$/.test(prefix)
+        item.kode_pengisi
       ) {
 
-        prefixCounts[prefix] =
-          (prefixCounts[prefix] || 0) + 1;
+        const cleanKode =
+          item.kode_pengisi
+            .trim();
+
+        const prefix =
+          cleanKode
+            .substring(0, 2)
+            .toUpperCase();
+
+
+        if (
+          prefix &&
+          /^[A-Z]{2}$/
+            .test(prefix)
+        ) {
+
+          prefixCounts[prefix] =
+            (
+              prefixCounts[prefix] ||
+              0
+            ) + 1;
+
+        }
 
       }
 
@@ -1707,16 +2257,18 @@ function updateDashboard(data) {
 
   const prefixContainer =
     document.getElementById(
-      "prefixContainer"
+      'prefixContainer'
     );
 
 
-  prefixContainer.innerHTML = "";
+  prefixContainer.innerHTML =
+    '';
 
 
   const prefixes =
-    Object.keys(prefixCounts)
-      .sort();
+    Object.keys(
+      prefixCounts
+    ).sort();
 
 
   if (
@@ -1724,32 +2276,37 @@ function updateDashboard(data) {
   ) {
 
     prefixContainer.innerHTML =
-      '<div class="empty">' +
-      'Belum ada pengisi tercatat.' +
-      '</div>';
+      `
+      <div
+        style="
+          color:#94a3b8;
+          font-size:0.9rem;
+        "
+      >
+        Belum ada pengisi tercatat.
+      </div>
+      `;
 
   } else {
 
     prefixes.forEach(
-      prefix => {
+      pfx => {
 
         const chip =
           document.createElement(
-            "div"
+            'div'
           );
 
         chip.className =
-          "prefix-chip";
+          'prefix-chip';
 
         chip.textContent =
-          prefix +
-          " : " +
-          prefixCounts[prefix] +
-          " pengisi";
+          `${pfx} : ${prefixCounts[pfx]} pengisi`;
 
-        prefixContainer.appendChild(
-          chip
-        );
+        prefixContainer
+          .appendChild(
+            chip
+          );
 
       }
     );
@@ -1759,15 +2316,16 @@ function updateDashboard(data) {
 
   /* =======================================================
      DAFTAR PENGISI
-     ======================================================= */
+  ======================================================= */
 
   const pengisiBody =
     document.getElementById(
-      "pengisiTableBody"
+      'pengisiTableBody'
     );
 
 
-  pengisiBody.innerHTML = "";
+  pengisiBody.innerHTML =
+    '';
 
 
   if (
@@ -1775,52 +2333,58 @@ function updateDashboard(data) {
   ) {
 
     pengisiBody.innerHTML =
-      '<tr>' +
-      '<td colspan="3" class="empty">' +
-      'Belum ada data pengisi' +
-      '</td>' +
-      '</tr>';
+      `
+      <tr>
+        <td
+          colspan="3"
+          style="
+            text-align:center;
+            color:#94a3b8;
+          "
+        >
+          Belum ada data pengisi
+        </td>
+      </tr>
+      `;
 
   } else {
 
     sortedData.forEach(
-      (row, index) => {
+      (row, idx) => {
 
         const tr =
           document.createElement(
-            "tr"
+            'tr'
           );
 
+        tr.innerHTML = `
 
-        const waktu =
-          escapeHTML(
-            row.waktu_pengisian || "-"
+          <td>
+            ${idx + 1}
+          </td>
+
+          <td>
+            ${escapeHtml(
+              row.waktu_pengisian ||
+              '-'
+            )}
+          </td>
+
+          <td>
+            <strong>
+              ${escapeHtml(
+                row.kode_pengisi ||
+                '-'
+              )}
+            </strong>
+          </td>
+
+        `;
+
+        pengisiBody
+          .appendChild(
+            tr
           );
-
-
-        const kode =
-          escapeHTML(
-            row.kode_pengisi || "-"
-          );
-
-
-        tr.innerHTML =
-          "<td>" +
-          (index + 1) +
-          "</td>" +
-
-          "<td>" +
-          waktu +
-          "</td>" +
-
-          "<td><strong>" +
-          kode +
-          "</strong></td>";
-
-
-        pengisiBody.appendChild(
-          tr
-        );
 
       }
     );
@@ -1829,41 +2393,42 @@ function updateDashboard(data) {
 
 
   /* =======================================================
-     RATA-RATA Q1 - Q11
-     ======================================================= */
+     RATA-RATA Q1-Q11
+  ======================================================= */
 
   const avgGrid =
     document.getElementById(
-      "avgGrid"
+      'avgGrid'
     );
 
 
-  avgGrid.innerHTML = "";
+  avgGrid.innerHTML =
+    '';
 
 
   const qTitles = [
 
-    "1. Keaktifan Usrah",
+    '1. Keaktifan Usrah',
 
-    "2. Ikatan Ukhuwah",
+    '2. Ikatan Ukhuwah',
 
-    "3. Pendekatan Personal",
+    '3. Pendekatan Personal',
 
-    "4. Kesesuaian Materi",
+    '4. Kesesuaian Materi',
 
-    "5. Kesiapan Materi",
+    '5. Kesiapan Materi',
 
-    "6. Metode Evaluasi",
+    '6. Metode Evaluasi',
 
-    "7. Anggota Sudah Membina",
+    '7. Anggota Belum Membina',
 
-    "8. Penguatan Motivasi",
+    '8. Penguatan Motivasi',
 
-    "9. Pelatihan Rekrutmen",
+    '9. Pelatihan Rekrutmen',
 
-    "10. Kesehatan Kelas Membaik",
+    '10. Kesehatan Kelas Membaik',
 
-    "11. Kenaikan Kelas Siswa"
+    '11. Kendala Siswa Tidak Naik'
 
   ];
 
@@ -1875,8 +2440,7 @@ function updateDashboard(data) {
   ) {
 
     const key =
-      "q" + i;
-
+      `q${i}`;
 
     let total = 0;
 
@@ -1886,17 +2450,17 @@ function updateDashboard(data) {
     sortedData.forEach(
       row => {
 
-        const value =
+        const val =
           parseFloat(
             row[key]
           );
 
 
         if (
-          !isNaN(value)
+          !isNaN(val)
         ) {
 
-          total += value;
+          total += val;
 
           count++;
 
@@ -1906,30 +2470,42 @@ function updateDashboard(data) {
     );
 
 
-    const average =
+    const avg =
       count > 0
-        ? (total / count).toFixed(2)
-        : "-";
+        ? (
+            total / count
+          ).toFixed(2)
+        : '-';
 
 
     const card =
       document.createElement(
-        "div"
+        'div'
       );
 
 
     card.className =
-      "avg-card";
+      'avg-card';
 
 
-    card.innerHTML =
-      '<span style="font-size:0.9rem;font-weight:600;">' +
-      escapeHTML(qTitles[i - 1]) +
-      '</span>' +
+    card.innerHTML = `
 
-      '<span class="avg-val">' +
-      average +
-      '</span>';
+      <span
+        style="
+          font-size:0.9rem;
+          font-weight:600;
+        "
+      >
+        ${escapeHtml(
+          qTitles[i - 1]
+        )}
+      </span>
+
+      <span class="avg-val">
+        ${avg}
+      </span>
+
+    `;
 
 
     avgGrid.appendChild(
@@ -1941,104 +2517,108 @@ function updateDashboard(data) {
 
   /* =======================================================
      JAWABAN TERBUKA
-     ======================================================= */
-
-  const ftBody =
-    document.getElementById(
-      "freeTextTableBody"
-    );
-
-
-  ftBody.innerHTML = "";
-
+  ======================================================= */
 
   const ftQuestions = [
 
     {
-      key: "ft1",
-      label: "Kendala Utama Absen"
+      key: 'ft1',
+      label: 'Kendala Utama Absen'
     },
 
     {
-      key: "ft2",
-      label: "Kendala Tempat Offline"
+      key: 'ft2',
+      label: 'Kendala Tempat Offline'
     },
 
     {
-      key: "ft3",
-      label: "Pengelolaan Usrah"
+      key: 'ft3',
+      label: 'Pengelolaan Usrah'
     },
 
     {
-      key: "ft4",
-      label: "Dukungan Lembaga"
+      key: 'ft4',
+      label: 'Dukungan Lembaga'
     },
 
     {
-      key: "ft5",
-      label: "Alasan Ragu/Menolak"
+      key: 'ft5',
+      label: 'Alasan Ragu/Menolak'
     },
 
     {
-      key: "ft6",
-      label: "Alasan Belum Membina"
+      key: 'ft6',
+      label: 'Alasan Belum Membina'
     },
 
     {
-      key: "ft7",
-      label: "Cara Menghadapi"
+      key: 'ft7',
+      label: 'Cara Menghadapi'
     },
 
     {
-      key: "ft8",
-      label: "Proyek Amal"
+      key: 'ft8',
+      label: 'Proyek Amal'
     },
 
     {
-      key: "ft9",
-      label: "Materi Pembekalan Naqib"
+      key: 'ft9',
+      label: 'Materi Pembekalan Naqib'
     },
 
     {
-      key: "ft10",
-      label: "Saran / Masukan"
+      key: 'ft10',
+      label: 'Saran / Masukan'
     }
 
   ];
 
 
-  const ftEntries = [];
+  /*
+   * Bangun seluruh entry jawaban terbuka
+   */
+
+  allFreeTextEntries = [];
 
 
   sortedData.forEach(
     row => {
 
       ftQuestions.forEach(
-        question => {
+        q => {
 
-          const text =
-            String(
-              row[question.key] || ""
+          const textVal =
+            (
+              row[q.key] ||
+              ''
             ).trim();
 
 
+          /*
+           * Tetap mengikuti
+           * aturan awal:
+           * minimal 15 karakter.
+           */
+
           if (
-            text.length > 15
+            textVal.length > 15
           ) {
 
-            ftEntries.push({
+            allFreeTextEntries.push({
 
               waktu:
-                row.waktu_pengisian || "-",
+                row.waktu_pengisian ||
+                '-',
 
               kode:
-                row.kode_pengisi || "-",
+                row.kode_pengisi ||
+                '-',
 
               topik:
-                question.label,
+                q.label,
 
               teks:
-                text
+                textVal
 
             });
 
@@ -2051,136 +2631,240 @@ function updateDashboard(data) {
   );
 
 
-  if (
-    ftEntries.length === 0
-  ) {
+  /*
+   * Tampilkan tabel.
+   * Kalau sedang ada search,
+   * filter tetap dipertahankan.
+   */
 
-    ftBody.innerHTML =
-      '<tr>' +
-      '<td colspan="4" class="empty">' +
-      'Belum ada tanggapan terbuka (> 15 karakter)' +
-      '</td>' +
-      '</tr>';
+  renderFreeTextTable();
 
-  } else {
-
-    ftEntries.forEach(
-      (entry, index) => {
-
-        const tr =
-          document.createElement(
-            "tr"
-          );
+}
 
 
-        tr.innerHTML =
+/* =========================================================
+   SEARCH JAWABAN TERBUKA
+========================================================= */
 
-          "<td>" +
-          (index + 1) +
-          "</td>" +
+function renderFreeTextTable() {
 
-          '<td style="font-size:0.85rem;">' +
-          escapeHTML(entry.waktu) +
-          "</td>" +
-
-          "<td><strong>" +
-          escapeHTML(entry.kode) +
-          "</strong></td>" +
-
-          "<td>" +
-
-          '<strong style="color:var(--primary);font-size:0.85rem;">' +
-
-          "[" +
-          escapeHTML(entry.topik) +
-          "]" +
-
-          "</strong><br>" +
-
-          escapeHTML(entry.teks)
-            .replace(/\n/g, "<br>") +
-
-          "</td>";
+  const ftBody =
+    document.getElementById(
+      'freeTextTableBody'
+    );
 
 
-        ftBody.appendChild(
-          tr
-        );
+  const query =
+    searchFreeText.value
+      .trim()
+      .toLowerCase();
+
+
+  /*
+   * Cari dalam SATU BARIS.
+   *
+   * Yang dicari:
+   *
+   * - waktu
+   * - kode
+   * - qTitles
+   * - isi jawaban
+   */
+
+  const filteredEntries =
+    allFreeTextEntries.filter(
+      entry => {
+
+        if (!query) {
+
+          return true;
+
+        }
+
+
+        const searchableText = [
+
+          entry.waktu,
+
+          entry.kode,
+
+          entry.topik,
+
+          entry.teks
+
+        ]
+          .join(' ')
+          .toLowerCase();
+
+
+        return searchableText
+          .includes(query);
 
       }
     );
 
-  }
 
-}
+  ftBody.innerHTML =
+    '';
 
 
-/* =========================================================
-   MEMERIKSA KODE DUPLIKAT
-   LANGSUNG DARI GOOGLE SHEET
-   ========================================================= */
-
-async function isDuplicateKode(kode) {
-
-  const data =
-    await fetchDataFromGoogleSheet();
-
+  /*
+   * Tidak ada hasil
+   */
 
   if (
-    !Array.isArray(data)
+    filteredEntries.length === 0
   ) {
 
-    return false;
+    ftBody.innerHTML =
+      `
+      <tr>
+
+        <td
+          colspan="4"
+          class="empty-result"
+        >
+          Tidak ada hasil pencarian.
+        </td>
+
+      </tr>
+      `;
+
+
+    searchInfo.textContent =
+      'Tidak ada hasil';
+
+
+    return;
 
   }
 
 
-  return data.some(
-    row => {
+  /*
+   * Semua baris yang cocok
+   * ditampilkan LENGKAP.
+   */
 
-      const existing =
-        String(
-          row.kode_pengisi || ""
-        )
-        .trim()
-        .toUpperCase();
+  filteredEntries.forEach(
+    (entry, idx) => {
+
+      const tr =
+        document.createElement(
+          'tr'
+        );
 
 
-      return existing === kode;
+      tr.innerHTML = `
+
+        <td>
+          ${idx + 1}
+        </td>
+
+        <td
+          style="
+            font-size:0.85rem;
+          "
+        >
+          ${escapeHtml(
+            entry.waktu
+          )}
+        </td>
+
+        <td>
+          <strong>
+            ${escapeHtml(
+              entry.kode
+            )}
+          </strong>
+        </td>
+
+        <td>
+
+          <strong
+            style="
+              color:var(--primary);
+              font-size:0.85rem;
+            "
+          >
+            [${escapeHtml(
+              entry.topik
+            )}]
+          </strong>
+
+          <br>
+
+          ${escapeHtml(
+            entry.teks
+          )}
+
+        </td>
+
+      `;
+
+
+      ftBody.appendChild(
+        tr
+      );
 
     }
   );
 
+
+  /*
+   * Informasi hasil
+   */
+
+  if (query) {
+
+    searchInfo.innerHTML =
+      `
+      Menampilkan
+      <strong>
+        ${filteredEntries.length}
+      </strong>
+      dari
+      <strong>
+        ${allFreeTextEntries.length}
+      </strong>
+      jawaban
+      `;
+
+  } else {
+
+    searchInfo.innerHTML =
+      `
+      Menampilkan
+      <strong>
+        ${allFreeTextEntries.length}
+      </strong>
+      jawaban
+      `;
+
+  }
+
 }
 
 
 /* =========================================================
-   AMBIL NILAI RADIO
-   ========================================================= */
+   EVENT SEARCH
+========================================================= */
 
-function getRadioValue(name) {
+searchFreeText.addEventListener(
+  'input',
+  function() {
 
-  const selected =
-    document.querySelector(
-      'input[name="' +
-      name +
-      '"]:checked'
-    );
+    renderFreeTextTable();
 
-
-  return selected
-    ? selected.value
-    : "";
-
-}
+  }
+);
 
 
 /* =========================================================
-   SUBMIT FORM
-   ========================================================= */
+   SUBMIT SURVEI
+========================================================= */
 
 surveyForm.addEventListener(
-  "submit",
+  'submit',
   async function(e) {
 
     e.preventDefault();
@@ -2188,18 +2872,19 @@ surveyForm.addEventListener(
     hideAlert();
 
 
-    /* -----------------------------------
-       VALIDASI SHEET ID
-       ----------------------------------- */
+    /*
+     * Cek SheetDB
+     */
 
     if (
-      !SHEET_ID ||
-      SHEET_ID ===
-      "MASUKKAN_SHEET_ID_ANDA"
+      !API_URL ||
+      API_URL.includes(
+        "YOUR_API_ID"
+      )
     ) {
 
       showAlert(
-        "SHEET_ID Google Sheet belum dimasukkan."
+        'URL API SheetDB belum dimasukkan!'
       );
 
       return;
@@ -2207,27 +2892,9 @@ surveyForm.addEventListener(
     }
 
 
-    /* -----------------------------------
-       VALIDASI SHEETDB
-       ----------------------------------- */
-
-    if (
-      !SHEETDB_API_URL ||
-      SHEETDB_API_URL.trim() === ""
-    ) {
-
-      showAlert(
-        "URL SheetDB belum dimasukkan."
-      );
-
-      return;
-
-    }
-
-
-    /* -----------------------------------
-       VALIDASI KODE
-       ----------------------------------- */
+    /*
+     * Kode
+     */
 
     const formattedKode =
       kodeInput.value
@@ -2242,53 +2909,83 @@ surveyForm.addEventListener(
     ) {
 
       showAlert(
-        "Format Kode Pengisi tidak sesuai! " +
-        "Contoh format benar: AB CD123 EFG45"
+        'Format Kode Pengisi tidak sesuai! ' +
+        'Contoh format benar: AB CD123 EFG45'
       );
-
-      kodeInput.focus();
 
       return;
 
     }
 
 
+    /*
+     * Tombol
+     */
+
     btnSubmit.disabled =
       true;
 
     btnSubmit.textContent =
-      "Memeriksa data...";
+      'Memeriksa & Menyimpan...';
 
 
     try {
 
-      /* =================================
-         CEK DUPLIKAT
-         LANGSUNG KE GOOGLE SHEET
-         ================================= */
+      /*
+       * Cek duplikasi dari
+       * Google Sheet langsung.
+       */
 
-      const duplicate =
-        await isDuplicateKode(
-          formattedKode
+      const currentData =
+        await fetchDataFromGoogleSheet();
+
+
+      const isDuplicate =
+        Array.isArray(
+          currentData
+        ) &&
+        currentData.some(
+          row => {
+
+            return (
+              (
+                row.kode_pengisi ||
+                ''
+              )
+                .trim()
+                .toUpperCase()
+              ===
+              formattedKode
+            );
+
+          }
         );
 
 
-      if (duplicate) {
+      if (
+        isDuplicate
+      ) {
 
         showAlert(
-          'Kode Pengisi "' +
-          formattedKode +
-          '" sudah pernah mengisi survei ini!'
+          `Kode Pengisi "${formattedKode}" ` +
+          `sudah pernah mengisi survei ini!`
         );
+
+
+        btnSubmit.disabled =
+          false;
+
+        btnSubmit.textContent =
+          'Kirim Survei';
 
         return;
 
       }
 
 
-      /* =================================
-         WAKTU
-         ================================= */
+      /*
+       * Timestamp
+       */
 
       const now =
         new Date();
@@ -2296,21 +2993,21 @@ surveyForm.addEventListener(
 
       const timestamp =
         now.toLocaleDateString(
-          "id-ID"
+          'id-ID'
         ) +
-        " " +
+        ' ' +
         now.toLocaleTimeString(
-          "id-ID",
+          'id-ID',
           {
-            hour: "2-digit",
-            minute: "2-digit"
+            hour: '2-digit',
+            minute: '2-digit'
           }
         );
 
 
-      /* =================================
-         PAYLOAD
-         ================================= */
+      /*
+       * Payload
+       */
 
       const payload = {
 
@@ -2321,100 +3018,138 @@ surveyForm.addEventListener(
           formattedKode,
 
 
-        q1: getRadioValue("q1"),
-        q2: getRadioValue("q2"),
-        q3: getRadioValue("q3"),
-        q4: getRadioValue("q4"),
-        q5: getRadioValue("q5"),
-        q6: getRadioValue("q6"),
-        q7: getRadioValue("q7"),
-        q8: getRadioValue("q8"),
-        q9: getRadioValue("q9"),
-        q10: getRadioValue("q10"),
-        q11: getRadioValue("q11"),
+        q1:
+          document.querySelector(
+            'input[name="q1"]:checked'
+          )?.value || '',
+
+        q2:
+          document.querySelector(
+            'input[name="q2"]:checked'
+          )?.value || '',
+
+        q3:
+          document.querySelector(
+            'input[name="q3"]:checked'
+          )?.value || '',
+
+        q4:
+          document.querySelector(
+            'input[name="q4"]:checked'
+          )?.value || '',
+
+        q5:
+          document.querySelector(
+            'input[name="q5"]:checked'
+          )?.value || '',
+
+        q6:
+          document.querySelector(
+            'input[name="q6"]:checked'
+          )?.value || '',
+
+        q7:
+          document.querySelector(
+            'input[name="q7"]:checked'
+          )?.value || '',
+
+        q8:
+          document.querySelector(
+            'input[name="q8"]:checked'
+          )?.value || '',
+
+        q9:
+          document.querySelector(
+            'input[name="q9"]:checked'
+          )?.value || '',
+
+        q10:
+          document.querySelector(
+            'input[name="q10"]:checked'
+          )?.value || '',
+
+        q11:
+          document.querySelector(
+            'input[name="q11"]:checked'
+          )?.value || '',
 
 
         ft1:
           document
-            .getElementById("ft1")
+            .getElementById('ft1')
             .value
             .trim(),
 
         ft2:
           document
-            .getElementById("ft2")
+            .getElementById('ft2')
             .value
             .trim(),
 
         ft3:
           document
-            .getElementById("ft3")
+            .getElementById('ft3')
             .value
             .trim(),
 
         ft4:
           document
-            .getElementById("ft4")
+            .getElementById('ft4')
             .value
             .trim(),
 
         ft5:
           document
-            .getElementById("ft5")
+            .getElementById('ft5')
             .value
             .trim(),
 
         ft6:
           document
-            .getElementById("ft6")
+            .getElementById('ft6')
             .value
             .trim(),
 
         ft7:
           document
-            .getElementById("ft7")
+            .getElementById('ft7')
             .value
             .trim(),
 
         ft8:
           document
-            .getElementById("ft8")
+            .getElementById('ft8')
             .value
             .trim(),
 
         ft9:
           document
-            .getElementById("ft9")
+            .getElementById('ft9')
             .value
             .trim(),
 
         ft10:
           document
-            .getElementById("ft10")
+            .getElementById('ft10')
             .value
             .trim()
 
       };
 
 
-      /* =================================
-         TULIS KE SHEETDB
-         ================================= */
+      /*
+       * KIRIM KE SHEETDB
+       */
 
-      btnSubmit.textContent =
-        "Menyimpan data...";
-
-
-      const postResponse =
+      const postRes =
         await fetch(
-          SHEETDB_API_URL,
+          API_URL,
           {
-
-            method: "POST",
+            method: 'POST',
 
             headers: {
-              "Content-Type":
-                "application/json"
+              'Content-Type':
+                'application/json'
             },
 
             body:
@@ -2427,23 +3162,23 @@ surveyForm.addEventListener(
 
 
       if (
-        !postResponse.ok
+        !postRes.ok
       ) {
 
         throw new Error(
-          "SheetDB gagal menyimpan data."
+          'Gagal mengirim data ke SheetDB.'
         );
 
       }
 
 
-      /* =================================
-         BERHASIL
-         ================================= */
+      /*
+       * Berhasil
+       */
 
       showAlert(
-        "Terima kasih! Survei Anda berhasil dikirim.",
-        "success"
+        'Terima kasih! Survei Anda berhasil dikirim.',
+        'success'
       );
 
 
@@ -2451,30 +3186,24 @@ surveyForm.addEventListener(
 
 
       /*
-       * Beri sedikit waktu agar data
-       * yang ditulis SheetDB sudah muncul
-       * pada Google Sheet.
+       * Refresh dashboard
        */
 
-      setTimeout(
-        fetchData,
-        1500
-      );
+      await fetchData();
 
 
-    } catch (error) {
+    } catch (err) {
 
       console.error(
-        "Error submit:",
-        error
+        'Submit error:',
+        err
       );
 
 
       showAlert(
-        "Terjadi kesalahan: " +
-        error.message
+        'Terjadi kesalahan saat mengirim data: ' +
+        err.message
       );
-
 
     } finally {
 
@@ -2482,7 +3211,7 @@ surveyForm.addEventListener(
         false;
 
       btnSubmit.textContent =
-        "Kirim Survei";
+        'Kirim Survei';
 
     }
 
@@ -2492,17 +3221,17 @@ surveyForm.addEventListener(
 
 /* =========================================================
    REFRESH
-   ========================================================= */
+========================================================= */
 
 btnRefresh.addEventListener(
-  "click",
+  'click',
   async function() {
 
     btnRefresh.disabled =
       true;
 
     btnRefresh.textContent =
-      "Memuat...";
+      'Memuat...';
 
 
     try {
@@ -2515,7 +3244,7 @@ btnRefresh.addEventListener(
         false;
 
       btnRefresh.textContent =
-        "Refresh Data";
+        'Refresh Data';
 
     }
 
@@ -2525,9 +3254,23 @@ btnRefresh.addEventListener(
 
 /* =========================================================
    LOAD AWAL
-   ========================================================= */
+========================================================= */
 
-fetchData();
+if (
+  SHEET_ID &&
+  SHEET_ID !==
+    "MASUKKAN_SHEET_ID_DI_SINI"
+) {
+
+  fetchData();
+
+} else {
+
+  console.warn(
+    'SHEET_ID belum dimasukkan.'
+  );
+
+}
 
 </script>
 
